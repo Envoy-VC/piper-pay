@@ -47,8 +47,8 @@ export const invoiceSchema = z
           name: z.string(),
           reference: z.string().optional(),
           quantity: z.number().gte(0),
-          unitPrice: z.string().regex(new RegExp('^\\d+$')),
-          discount: z.string().regex(new RegExp('^\\d+$')).optional(),
+          unitPrice: z.string().regex(/^\d+$/),
+          discount: z.string().regex(/^\d+$/).optional(),
           tax: z
             .object({
               amount: z.string(),
