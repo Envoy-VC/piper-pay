@@ -66,14 +66,14 @@ export const ConnectButton = () => {
   if (!address) {
     return (
       <Button
-        className='rounded-full'
+        className='rounded-xl'
         onClick={() =>
           open({
             view: 'Connect',
           })
         }
       >
-        {isOpen ? 'Connecting...' : 'Connect'}
+        Get Started
       </Button>
     );
   } else if (!chainIds.includes(activeChainId)) {

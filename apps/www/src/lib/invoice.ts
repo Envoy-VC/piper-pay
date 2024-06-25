@@ -78,3 +78,18 @@ export const invoiceSchema = z
   .describe('Request Network Format of an invoice');
 
 export type InvoiceType = z.infer<typeof invoiceSchema>;
+
+// prettier-ignore
+export const EVMChains = ['alfajores', 'arbitrum-one', 'arbitrum-rinkeby', 'avalanche', 'bsc', 'bsctest', 'celo', 'core', 'fantom', 'fuse', 'goerli', 'mainnet', 'mantle', 'mantle-testnet', 'matic', 'moonbeam', 'mumbai', 'optimism', 'private', 'rinkeby', 'sepolia', 'ronin', 'sokol', 'tombchain', 'xdai', 'zksynceratestnet', 'zksyncera', 'base']
+
+export const BtcChains = ['mainnet', 'testnet'];
+export const DeclarativeChains = ['tron', 'solana'];
+export const NearChains = ['aurora', 'aurora-testnet', 'near', 'near-testnet'];
+export const VMChains = [...EVMChains, ...NearChains];
+
+export const ChainNames = [
+  ...EVMChains,
+  ...BtcChains,
+  ...NearChains,
+  ...DeclarativeChains,
+];
