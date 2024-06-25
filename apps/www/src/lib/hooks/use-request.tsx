@@ -2,11 +2,11 @@ import { RequestNetwork } from '@requestnetwork/request-client.js';
 import { Web3SignatureProvider } from '@requestnetwork/web3-signature';
 import { useWalletClient } from 'wagmi';
 
-import { useEthers } from './use-ethers';
+// import { useEthers } from './use-ethers';
 
 export const useRequest = () => {
   const { data: walletClient } = useWalletClient();
-  const { provider, signer } = useEthers();
+  // const { provider, signer } = useEthers();
 
   const web3SignatureProvider = new Web3SignatureProvider(walletClient);
 

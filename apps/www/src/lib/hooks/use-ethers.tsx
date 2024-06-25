@@ -14,9 +14,11 @@ export function clientToProvider(client: Client<Transport, Chain>) {
   if (transport.type === 'fallback')
     return new providers.FallbackProvider(
       (transport.transports as ReturnType<Transport>[]).map(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- safe
         ({ value }) => new providers.JsonRpcProvider(value?.url, network)
       )
     );
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- safe
   return new providers.JsonRpcProvider(transport.url, network);
 }
 

@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access -- snaps api not yet supported */
 
 /* eslint-disable @typescript-eslint/no-unsafe-call -- snaps api not yet supported  */
-import { useAccount } from 'wagmi';
-
 import type {
   GetSnapsResponse,
   InvokeSnapParams,

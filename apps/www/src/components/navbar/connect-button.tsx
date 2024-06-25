@@ -23,7 +23,7 @@ export const ConnectButton = () => {
   const chains = useChains();
 
   const { open } = useWeb3Modal();
-  const { open: isOpen, selectedNetworkId } = useWeb3ModalState();
+  const { selectedNetworkId } = useWeb3ModalState();
 
   // Balance
   const { data: balance, status: balanceStatus } = useBalance({
