@@ -1,0 +1,25 @@
+{
+  "extends": "config/typescript/nextjs.json",
+  "compilerOptions": {
+    /* Bundled projects */
+    "incremental": true,
+
+    /* Path Aliases */
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"]
+    },
+
+    /* Types */
+    "types": ["unplugin-fonts/client"]
+  },
+  "include": [
+    ".eslintrc.cjs",
+    "vite-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.cjs",
+    "**/*.js"
+  ],
+  "exclude": ["node_modules"]
+}
