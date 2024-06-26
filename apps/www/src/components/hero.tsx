@@ -4,12 +4,9 @@ import React from 'react';
 
 import InvoiceIllustration from 'public/invoice.svg';
 
-import { Navbar } from './navbar';
-
 export const Hero = () => {
   return (
-    <div className='h-full min-h-screen bg-gradient-to-b from-[#EEFFF1] via-[#F8FAE9] via-[60%] to-[#FFF6E3]'>
-      <Navbar />
+    <div className='h-full min-h-screen w-full bg-gradient-to-b from-[#EEFFF1] via-[#F8FAE9] via-[60%] to-[#FFF6E3]'>
       <div className='flex h-full flex-col items-center justify-center px-3 py-24 text-center'>
         <h1 className='text-4xl font-medium sm:text-6xl md:text-7xl lg:text-8xl'>
           <div className='bg-gradient-to-r from-[#047863] to-[#01A261] bg-clip-text pb-1 text-transparent'>

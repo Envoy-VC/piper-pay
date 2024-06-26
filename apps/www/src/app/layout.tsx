@@ -8,6 +8,7 @@ import { cookieToInitialState } from 'wagmi';
 import { Web3Provider } from '~/providers';
 import '~/styles/globals.css';
 
+import { Navbar } from '~/components/navbar';
 import { Toaster } from '~/components/ui/sonner';
 
 const sfPro = localFont({
@@ -31,7 +32,10 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang='en'>
       <body className={`font-sans ${sfPro.variable}`}>
-        <Web3Provider initialState={initialState}>{children}</Web3Provider>
+        <Web3Provider initialState={initialState}>
+          <Navbar />
+          {children}
+        </Web3Provider>
         <Toaster />
       </body>
     </html>

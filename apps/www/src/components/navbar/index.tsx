@@ -10,8 +10,8 @@ import { ConnectButton } from './connect-button';
 
 export const Navbar = () => {
   return (
-    <div className='h-[6dvh] w-full'>
-      <div className='mx-auto flex h-full max-w-screen-xl items-center justify-between px-4'>
+    <div className='z-[10 bg-white] sticky top-0 h-[6dvh] w-full'>
+      <div className='mx-auto flex h-full items-center justify-between px-4 sm:px-8'>
         <div className='flex flex-row items-center gap-2'>
           <Image
             alt='PiperPay'
@@ -34,7 +34,7 @@ export const Navbar = () => {
             className='hidden p-0 px-2 text-base sm:flex'
             variant='link'
           >
-            <Link href='/dashboard/create'>Create Invoice</Link>
+            <Link href='/dashboard/create-invoice'>Create Invoice</Link>
           </Button>
           <ConnectButton />
         </div>
