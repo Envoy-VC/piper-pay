@@ -5,18 +5,18 @@ import Image from 'next/image';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useInvoiceForm } from '~/lib/hooks';
 import {
   BtcChains,
   DeclarativeChains,
   VMChains,
   getCurrencies,
 } from '~/lib/invoice';
-import { type InvoiceInfo, invoiceInfoSchema } from '~/lib/zod';
+import { type PaymentInfo, paymentInfoSchema } from '~/lib/zod';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Types } from '@requestnetwork/request-client.js';
-import { IdentityTypes, RequestLogicTypes } from '@requestnetwork/types';
-import { useAccount } from 'wagmi';
+import { RequestLogicTypes } from '@requestnetwork/types';
 
 import { Button } from '~/components/ui/button';
 import {
@@ -35,25 +35,22 @@ import {
   SelectValue,
 } from '~/components/ui/select';
 
-import { Header } from './header';
+import { Header } from '../header';
 
-export const InvoiceInfoForm = () => {
+export const PaymentInfoForm = () => {
   'use no memo';
 
-  const { address } = useAccount();
+  const { next, previous, paymentInfo, setPaymentInfo } = useInvoiceForm();
 
-  const form = useForm<InvoiceInfo>({
-    resolver: zodResolver(invoiceInfoSchema),
-    defaultValues: {
-      payee: {
-        type: IdentityTypes.TYPE.ETHEREUM_ADDRESS,
-        value: address,
-      },
-    },
+  const form = useForm<PaymentInfo>({
+    resolver: zodResolver(paymentInfoSchema),
+    defaultValues: paymentInfo,
   });
 
-  const onSubmit = (values: InvoiceInfo) => {
+  const onSubmit = (values: PaymentInfo) => {
     console.log(values);
+    setPaymentInfo(values);
+    next();
   };
 
   const currencyType = form.watch('currency.type');
@@ -68,12 +65,6 @@ export const InvoiceInfoForm = () => {
     }
   }, [currencyType, form]);
 
-  useEffect(() => {
-    if (address) {
-      form.setValue('payee.value', address);
-    }
-  }, [address, form]);
-
   return (
     <div className='flex flex-col gap-4 p-4'>
       <Header
@@ -82,95 +73,6 @@ export const InvoiceInfoForm = () => {
       />
       <Form {...form}>
         <form className='space-y-1' onSubmit={form.handleSubmit(onSubmit)}>
-          <div className='py-2 text-lg font-semibold text-neutral-700'>
-            Payee Details
-          </div>
-          <FormField
-            control={form.control}
-            name='payee.type'
-            render={({ field }) => (
-              <FormItem>
-                <Select
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder='Select Payee Type' />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value='ethereumAddress'>Address</SelectItem>
-                    <SelectItem value='ethereumSmartContract'>
-                      Smart Contract Address
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name='payee.value'
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    autoComplete='new-password'
-                    autoCorrect='off'
-                    placeholder='Connect Wallet to Autofill'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className='py-2 text-lg font-semibold text-neutral-700'>
-            Payer Details
-          </div>
-          <FormField
-            control={form.control}
-            name='payer.type'
-            render={({ field }) => (
-              <FormItem>
-                <Select
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder='Select Payer Type' />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value='ethereumAddress'>Address</SelectItem>
-                    <SelectItem value='ethereumSmartContract'>
-                      Smart Contract Address
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name='payer.value'
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    autoComplete='new-password'
-                    placeholder='Payer Address (0x13de...0b12)'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <div className='py-2 text-lg font-semibold text-neutral-700'>
             Currency Details
           </div>
@@ -339,7 +241,10 @@ export const InvoiceInfoForm = () => {
               </FormItem>
             )}
           />
-          <div className='flex py-6'>
+          <div className='flex items-center gap-3 py-6'>
+            <Button type='button' variant='outline' onClick={previous}>
+              Previous
+            </Button>
             <Button type='submit'>Next</Button>
           </div>
         </form>

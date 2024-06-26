@@ -7,6 +7,26 @@ import {
 import { RequestLogicTypes } from '@requestnetwork/types';
 import { z } from 'zod';
 
+export const userInfoSchema = z.object({
+  email: z.string().email().optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  businessName: z.string().optional(),
+  phone: z.string().optional(),
+  address: z
+    .object({
+      street: z.string().optional(),
+      city: z.string().optional(),
+      zipCode: z.string().optional(),
+      country: z.string().optional(),
+      state: z.string().optional(),
+    })
+    .optional(),
+  taxRegistration: z.string().optional(),
+  companyRegistration: z.string().optional(),
+  miscellaneous: z.record(z.any()).optional(),
+});
+
 export const invoiceSchema = z
   .object({
     meta: z
@@ -18,36 +38,11 @@ export const invoiceSchema = z
     purchaseOrderId: z.string().optional(),
     note: z.string().optional(),
     terms: z.string().optional(),
-    sellerInfo: z
-      .object({
-        email: z.string().email().optional(),
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
-        businessName: z.string().optional(),
-        phone: z.string().optional(),
-        address: z.any().optional(),
-        taxRegistration: z.string().optional(),
-        companyRegistration: z.string().optional(),
-        miscellaneous: z.record(z.any()).optional(),
-      })
+    sellerInfo: userInfoSchema
       .strict()
       .describe('Seller information')
       .optional(),
-    buyerInfo: z
-      .object({
-        email: z.string().email().optional(),
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
-        businessName: z.string().optional(),
-        phone: z.string().optional(),
-        address: z.any().optional(),
-        taxRegistration: z.string().optional(),
-        companyRegistration: z.string().optional(),
-        miscellaneous: z.record(z.any()).optional(),
-      })
-      .strict()
-      .describe('Buyer information')
-      .optional(),
+    buyerInfo: userInfoSchema.strict().describe('Buyer information').optional(),
     invoiceItems: z.array(
       z
         .object({
