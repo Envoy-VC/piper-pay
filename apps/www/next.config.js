@@ -5,6 +5,13 @@ const config = {
   experimental: {
     reactCompiler: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        hostname: 'icons.llamao.fi',
+      },
+    ],
+  },
 };
 
 export default config;

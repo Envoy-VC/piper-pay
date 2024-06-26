@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { z } from 'zod';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -44,3 +45,20 @@ export const errorHandler = (error: unknown) => {
   }
   return 'An error occurred';
 };
+
+function isValidZodLiteralUnion<T extends z.ZodLiteral<unknown>>(
+  literals: T[]
+): literals is [T, T, ...T[]] {
+  return literals.length >= 2;
+}
+
+export function constructZodLiteralUnionType<T extends z.ZodLiteral<unknown>>(
+  literals: T[]
+) {
+  if (!isValidZodLiteralUnion(literals)) {
+    throw new Error(
+      'Literals passed do not meet the criteria for constructing a union schema, the minimum length is 2'
+    );
+  }
+  return z.union(literals);
+}
