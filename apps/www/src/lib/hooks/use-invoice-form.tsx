@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { create } from 'zustand';
 
 export enum InvoiceFormStep {

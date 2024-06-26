@@ -109,7 +109,7 @@ export const ConnectButton = () => {
               className='h-9 w-9 rounded-full'
               src={
                 ensAvatar ??
-                `https://api.dicebear.com/8.x/shapes/svg?seed=${address}`
+                `https://api.dicebear.com/8.x/shapes/svg?seed=${address ?? ''}`
               }
             />
           )}
