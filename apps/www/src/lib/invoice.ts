@@ -1,3 +1,9 @@
+import {
+  CurrencyManager,
+  NativeCurrencyInput,
+  getSupportedERC777Tokens,
+} from '@requestnetwork/currency';
+import { RequestLogicTypes } from '@requestnetwork/types';
 import { z } from 'zod';
 
 export const invoiceSchema = z
@@ -83,6 +89,11 @@ const EVMChains = [
   {
     id: 'mainnet',
     name: 'Ethereum',
+    icon: 'ethereum',
+  },
+  {
+    id: 'rinkeby',
+    name: 'Ethereum Rinkeby',
     icon: 'ethereum',
   },
   {
@@ -188,3 +199,42 @@ export const ChainNames = [
   ...NearChains,
   ...DeclarativeChains,
 ] as const;
+
+export const getCurrencies = (
+  type: RequestLogicTypes.CURRENCY,
+  network?: (typeof ChainNames)[number]['id']
+) => {
+  const allCurrencies = CurrencyManager.getDefaultList();
+
+  if (
+    type === RequestLogicTypes.CURRENCY.ETH ||
+    type === RequestLogicTypes.CURRENCY.BTC
+  ) {
+    const c = allCurrencies.filter(
+      (currency) => currency.type === type
+    ) as (NativeCurrencyInput & {
+      id: string;
+      hash: string;
+      meta: unknown;
+    })[];
+    if (network) {
+      return c.filter((currency) => currency.network === network);
+    }
+    return c;
+  } else if (type === RequestLogicTypes.CURRENCY.ERC20) {
+    const c = allCurrencies.filter((currency) => currency.type === type);
+    if (network) {
+      return c.filter((currency) => currency.network === network);
+    }
+    return c;
+  } else if (type === RequestLogicTypes.CURRENCY.ERC777) {
+    const c = allCurrencies.filter((currency) => currency.type === type);
+    if (network) {
+      return c.filter((currency) => currency.network === network);
+    }
+    return c;
+  }
+
+  const c = allCurrencies.filter((currency) => currency.type === type);
+  return c;
+};

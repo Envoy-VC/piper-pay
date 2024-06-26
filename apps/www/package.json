@@ -11,7 +11,10 @@
     "start": "next start"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.6.0",
     "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-select": "^2.1.1",
     "@radix-ui/react-slot": "^1.0.2",
     "@requestnetwork/currency": "^0.15.0",
     "@requestnetwork/data-format": "^0.15.0",
@@ -35,6 +38,7 @@
     "next-themes": "^0.3.0",
     "react": "19.0.0-rc-935180c7e0-20240524",
     "react-dom": "19.0.0-rc-935180c7e0-20240524",
+    "react-hook-form": "^7.52.0",
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",

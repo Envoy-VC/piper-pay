@@ -10,9 +10,9 @@ import { ConnectButton } from './connect-button';
 
 export const Navbar = () => {
   return (
-    <div className='z-[10 bg-white] sticky top-0 h-[6dvh] w-full'>
+    <div className='fixed top-0 h-[6dvh] w-full'>
       <div className='mx-auto flex h-full items-center justify-between px-4 sm:px-8'>
-        <div className='flex flex-row items-center gap-2'>
+        <Link className='flex flex-row items-center gap-2' href='/'>
           <Image
             alt='PiperPay'
             height={32}
@@ -20,18 +20,18 @@ export const Navbar = () => {
             width={32}
           />
           <div className='text-2xl font-semibold'>PiperPay</div>
-        </div>
+        </Link>
         <div className='flex flex-row items-center gap-2'>
           <Button
             asChild
-            className='hidden p-0 px-2 text-base sm:flex'
+            className='hidden p-0 px-2 text-base text-foreground sm:flex'
             variant='link'
           >
             <Link href='/dashboard'>Dashboard</Link>
           </Button>
           <Button
             asChild
-            className='hidden p-0 px-2 text-base sm:flex'
+            className='hidden p-0 px-2 text-base text-foreground sm:flex'
             variant='link'
           >
             <Link href='/dashboard/create-invoice'>Create Invoice</Link>

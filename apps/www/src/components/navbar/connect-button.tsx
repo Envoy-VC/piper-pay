@@ -19,7 +19,7 @@ import { Skeleton } from '../ui/skeleton';
 /* eslint-disable @next/next/no-img-element -- ENS Avatar can have any remote pattern */
 
 export const ConnectButton = () => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const chains = useChains();
 
   const { open } = useWeb3Modal();
@@ -63,7 +63,7 @@ export const ConnectButton = () => {
     return '';
   })();
 
-  if (!address) {
+  if (!isConnected) {
     return (
       <Button
         className='rounded-xl'

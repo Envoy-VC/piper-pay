@@ -12,7 +12,6 @@ createWeb3Modal({
   wagmiConfig,
   projectId,
   enableAnalytics: true,
-  enableOnramp: true,
   themeMode: 'light',
 });
 
