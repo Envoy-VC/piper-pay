@@ -1,11 +1,17 @@
 import { createTw } from 'react-pdf-tailwind';
 
-import { Path, Rect, Svg, Text, View } from '@react-pdf/renderer';
+import type { UserInfo } from '~/lib/invoice';
+
+import { Font, Path, Rect, Svg, Text, View } from '@react-pdf/renderer';
+import { Country, State } from 'country-state-city';
 
 export const tw = createTw({
   theme: {
     fontFamily: {
-      sans: ['var(--font-sans)'],
+      sans: ['SF Pro Display Regular'],
+      medium: ['SF Pro Display Medium'],
+      semibold: ['SF Pro Display Semibold'],
+      bold: ['SF Pro Display Bold'],
     },
     extend: {
       colors: {
@@ -14,14 +20,32 @@ export const tw = createTw({
     },
   },
 });
+
+const URL = 'http://localhost:3000';
+
+Font.register({
+  family: 'SF Pro Display Regular',
+  src: `${URL}/sfPro-regular.otf`,
+});
+
+Font.register({
+  family: 'SF Pro Display Medium',
+  src: `${URL}/sfPro-medium.otf`,
+});
+
+Font.register({
+  family: 'SF Pro Display Semibold',
+  src: `${URL}/sfPro-semibold.otf`,
+});
+
+Font.register({
+  family: 'SF Pro Display Bold',
+  src: `${URL}/sfPro-bold.otf`,
+});
+
 export const Logo = () => {
   return (
-    <Svg
-      enable-background='new 0 0 512 512'
-      height='64'
-      viewBox='0 0 512 512'
-      width='64'
-    >
+    <Svg height='64' viewBox='0 0 512 512' width='64'>
       <Path
         d='m58.852 423.328-32.851 61.799.821-336.709c0-67.651 54.613-122.366 122.365-122.366h335.889c-95.469 29.668-194.943 96.702-260.643 173.078-72.474 83.559-113.639 141.047-165.581 224.198'
         fill='#047863'
@@ -34,38 +58,54 @@ export const Logo = () => {
   );
 };
 
-interface AddressProps {
+interface AddressProps extends UserInfo {
   type: 'from' | 'to';
-  name?: string;
-  streetAddress?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  email?: string;
 }
 
 export const Address = (props: AddressProps) => {
+  const { type, ...userInfo } = props;
+
+  const getCountryName = () => {
+    if (userInfo.address?.country) {
+      const country = Country.getCountryByCode(userInfo.address.country);
+      return country?.name ?? null;
+    }
+    return null;
+  };
+
+  const getStateName = () => {
+    const countryCode = userInfo.address?.country ?? null;
+    if (!countryCode) return null;
+
+    const stateCode = userInfo.address?.state ?? null;
+    if (!stateCode) return null;
+
+    const state = State.getStateByCodeAndCountry(stateCode, countryCode);
+    return state?.name ?? null;
+  };
+
+  const countryName = getCountryName();
+  const stateName = getStateName();
+
   return (
     <View style={tw('flex w-full  basis-1/2 flex-col')}>
-      <Text style={tw('text-lg font-semibold text-headings')}>
-        Bill {props.type}
-      </Text>
+      <Text style={tw('text-lg font-semibold text-headings')}>Bill {type}</Text>
       <Text style={tw('text-lg font-bold text-neutral-700 pb-1')}>
-        {props.name ?? ''}
+        {`${userInfo.firstName ?? ''} ${userInfo.lastName ?? ''}`}
       </Text>
       <Text
         style={tw('text-lg font-medium text-neutral-700 leading-[1.2] pb-1')}
       >
-        {props.email ? `(${props.email})` : ''}
+        {userInfo.email ? `(${userInfo.email})` : ''}
       </Text>
       <Text style={tw('text-lg font-medium text-neutral-700 leading-[1.2]')}>
-        {props.streetAddress}
+        {userInfo.address?.street ?? ''}
       </Text>
       <Text style={tw('text-lg font-medium text-neutral-700 leading-[1.2]')}>
-        {props.city}
+        {userInfo.address?.city}
       </Text>
       <Text style={tw('text-lg font-medium text-neutral-700 leading-[1.2]')}>
-        {`${props.state ?? ''} ${props.country ? `, ${props.country}` : ''}`}
+        {`${stateName ?? ''} ${countryName ? `, ${countryName}` : ''}`}
       </Text>
     </View>
   );
@@ -74,7 +114,6 @@ export const Address = (props: AddressProps) => {
 export const CalenderLogo = () => {
   return (
     <Svg
-      fill='none'
       height='24'
       stroke='currentColor'
       strokeLinejoin='round'
@@ -145,6 +184,133 @@ export const Note = ({ text }: NoteProps) => {
       >
         <Text style={tw('text-base font-medium text-neutral-700')}>{text}</Text>
       </View>
+    </View>
+  );
+};
+
+interface TableProps {
+  items: {
+    name?: string;
+    quantity?: number;
+    unitPrice?: string;
+    tax: {
+      type: 'percentage' | 'fixed';
+      amount?: string;
+    };
+    discount?: string;
+  }[];
+}
+
+const calculateTotal = (items: TableProps['items']) => {
+  let total = 0;
+
+  items.forEach((item) => {
+    const { quantity, unitPrice, tax, discount } = item;
+    const base = Number(unitPrice ?? 0) * (quantity ?? 0);
+    const discounted = base - Number(discount ?? 0);
+    let afterTax: number;
+
+    if (tax.type === 'percentage') {
+      afterTax = discounted + discounted * (Number(tax.amount ?? 0) / 100);
+    } else {
+      afterTax = discounted + Number(tax.amount);
+    }
+
+    total += afterTax;
+  });
+
+  return total.toFixed(2);
+};
+
+export const ItemsTable = ({ items }: TableProps) => {
+  return (
+    <View style={tw('flex flex-col w-full pt-8 gap-2')}>
+      <View
+        style={tw(
+          'flex flex-row items-center gap-1 justify-around bg-[#01A262] p-2 rounded-t-md text-lg font-semibold text-white pt-4'
+        )}
+      >
+        <Text style={tw('w-[10rem]')}>Item</Text>
+        <Text style={tw('')}>Quantity</Text>
+        <Text style={tw('')}>Unit Price</Text>
+        <Text style={tw('')}>Tax</Text>
+        <Text style={tw('')}>Discount</Text>
+        <Text style={tw('')}>Total</Text>
+      </View>
+      {items.map((item) => {
+        const { name, quantity, unitPrice, tax, discount } = item;
+        return (
+          <View
+            key={item.name}
+            style={tw(
+              'flex flex-row items-center gap-1 justify-around p-2 rounded-md text-lg font-medium text-neutral-700 px-2 border-b '
+            )}
+          >
+            <Text style={tw('w-[20rem]')}>{name}</Text>
+            <Text style={tw('flex-1')}>{quantity ?? '0'}</Text>
+            <Text style={tw('flex-1')}>{unitPrice ?? '0'}</Text>
+            <Text style={tw('flex-1')}>{tax.amount ?? 0}%</Text>
+            <Text style={tw('flex-1')}>{discount}</Text>
+            <Text style={tw('flex-1')}>{calculateTotal([item])}</Text>
+          </View>
+        );
+      })}
+      <View
+        style={tw(
+          'flex flex-row items-center gap-1 p-2 rounded-md text-lg font-semibold text-neutral-700 px-2 border-b justify-end border-neutral-300'
+        )}
+      >
+        <Text
+          style={tw(
+            'font-medium flex-1 justify-end items-end flex text-neutral-700'
+          )}
+        >
+          Total
+        </Text>
+        <Text style={tw('px-[6.5rem] text-neutral-700 font-semibold')}>
+          {calculateTotal(items)}
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+interface PaymentTermsProps {
+  terms?: string;
+  lateFeesPercent?: number;
+  lateFeesFix?: string;
+}
+
+export const PaymentTerms = (props: PaymentTermsProps) => {
+  const lateFees = Number(props.lateFeesPercent ?? props.lateFeesFix ?? '0');
+  const lateFeesType = props.lateFeesPercent ? '%' : '';
+  const hasLateFees = Boolean(lateFees);
+  return (
+    <View style={tw('flex flex-col w-full gap-3 py-12')}>
+      <Text style={tw('text-xl font-medium text-neutral-700')}>
+        Payment Terms
+      </Text>
+
+      <View
+        style={tw(
+          'border border-neutral-300 rounded-md flex flex-row items-center gap-3 py-1 px-2'
+        )}
+      >
+        <Text style={tw('text-base font-medium text-neutral-700')}>
+          {props.terms}
+        </Text>
+      </View>
+      {hasLateFees ? (
+        <View style={tw('flex flex-row items-center gap-2')}>
+          <Text style={tw('text-base font-semibold text-headings py-1')}>
+            Late Fees:
+          </Text>
+          <Text style={tw('text-base font-medium text-neutral-700')}>
+            {lateFees}
+            {lateFeesType}
+          </Text>
+        </View>
+      ) : null}
     </View>
   );
 };

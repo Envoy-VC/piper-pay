@@ -1,23 +1,64 @@
 'use client';
 
-import React from 'react';
+import React, { createElement } from 'react';
 
 import { InvoiceFormStep, useInvoiceForm } from '~/lib/hooks';
 
-import { InvoicePDF } from '../_components';
+import { PDFViewer } from '@react-pdf/renderer';
+
+import { Button } from '~/components/ui/button';
+
+import { InvoicePDF, type InvoicePDFProps } from '../_components';
 import { InvoiceInfoForm, PartyInfoForm, PaymentInfoForm } from './_components';
 
+export const renderPDF = async (props: InvoicePDFProps) => {
+  const { pdf } = await import('@react-pdf/renderer');
+  const { InvoicePDF: PDF } = await import('../_components/invoice-pdf');
+  // @ts-expect-error  err
+  return pdf(createElement(PDF, props)).toBlob();
+};
+
 const CreateInvoice = () => {
-  const { step } = useInvoiceForm();
+  const { step, partyInfo, paymentInfo, invoiceInfo } = useInvoiceForm();
+
   return (
     <div className='flex w-full flex-col gap-3 bg-gray-50 lg:flex-row'>
-      <div className='w-full basis-2/5'>
+      <div className='w-full basis-1/2'>
         {step === InvoiceFormStep.PartyInfo && <PartyInfoForm />}
         {step === InvoiceFormStep.PaymentInfo && <PaymentInfoForm />}
         {step === InvoiceFormStep.InvoiceInfo && <InvoiceInfoForm />}
       </div>
-      <div className='w-full basis-3/5'>
-        <InvoicePDF />
+      <div className='flex w-full basis-1/2 flex-col gap-2 px-2'>
+        <Button
+          className='w-fit'
+          onClick={async () => {
+            const blob = await renderPDF({
+              partyInfo,
+              paymentInfo,
+              invoiceInfo,
+            });
+            console.log(blob);
+            const file = new File([blob], 'invoice.pdf', {
+              type: 'application/pdf',
+            });
+
+            const url = URL.createObjectURL(file);
+            const a = document.createElement('a');
+
+            a.download = 'invoice.pdf';
+            a.href = url;
+            a.click();
+          }}
+        >
+          Download
+        </Button>
+        <PDFViewer className='m-0 p-0' height='900px' showToolbar={false}>
+          <InvoicePDF
+            invoiceInfo={invoiceInfo}
+            partyInfo={partyInfo}
+            paymentInfo={paymentInfo}
+          />
+        </PDFViewer>
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ import {
   type PaymentTypes,
   RequestLogicTypes,
 } from '@requestnetwork/types';
-import { City, Country, State } from 'country-state-city';
+import { Country, State } from 'country-state-city';
 import { z } from 'zod';
 
 import type { InvoiceInfo, PartyInfo, PaymentInfo } from './zod';
@@ -88,6 +88,7 @@ export const invoiceSchema = z
   .strict()
   .describe('Request Network Format of an invoice');
 
+export type UserInfo = z.infer<typeof userInfoSchema>;
 export type InvoiceType = z.infer<typeof invoiceSchema>;
 // https://icons.llamao.fi/icons/chains/rsz_rsz_zksync era
 export const EVMChains = [
@@ -297,7 +298,7 @@ export const getRequestParams = (
   }
 
   const currencyWithUnits =
-    Number(paymentInfo.expectedAmount) * (10 ** currency[0].decimals);
+    Number(paymentInfo.expectedAmount) * 10 ** currency[0].decimals;
 
   const request: ClientTypes.IRequestInfo = {
     currency: paymentInfo.currency,
@@ -307,7 +308,7 @@ export const getRequestParams = (
     timestamp: Utils.getCurrentTimestampInSecond(),
   };
 
-  let { id, ...params } = paymentInfo.parameters;
+  const { id: _id, ...params } = paymentInfo.parameters;
 
   if ('acceptedTokens' in params) {
     const tokens = getSupportedERC20Tokens().filter((t) => {
