@@ -5,7 +5,7 @@ import {
   createStorage,
   http,
 } from 'wagmi';
-import { anvil, mainnet, sepolia } from 'wagmi/chains';
+import { anvil, mainnet, sepolia, zkSyncSepoliaTestnet } from 'wagmi/chains';
 import { walletConnect } from 'wagmi/connectors';
 import { env } from '~/env';
 
@@ -19,7 +19,7 @@ const metadata = {
 };
 
 export const wagmiConfig: Config = createConfig({
-  chains: [mainnet, sepolia, anvil],
+  chains: [mainnet, sepolia, anvil, zkSyncSepoliaTestnet],
   ssr: true,
   storage: createStorage({
     storage: cookieStorage,
@@ -29,5 +29,6 @@ export const wagmiConfig: Config = createConfig({
     [mainnet.id]: http(),
     [sepolia.id]: http(),
     [anvil.id]: http(),
+    [zkSyncSepoliaTestnet.id]: http(),
   },
 });

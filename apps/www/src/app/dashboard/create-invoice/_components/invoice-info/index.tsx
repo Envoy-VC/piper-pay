@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-import { useInvoiceForm } from '~/lib/hooks';
+import { useInvoiceForm, useRequest } from '~/lib/hooks';
 import { getRequestParams } from '~/lib/invoice';
 import { type InvoiceInfo, invoiceInfoSchema } from '~/lib/zod';
 
@@ -29,6 +29,8 @@ export const InvoiceInfoForm = () => {
   const { paymentInfo, invoiceInfo, partyInfo, setInvoiceInfo, previous } =
     useInvoiceForm();
 
+  const { createRequest } = useRequest();
+
   const form = useForm<InvoiceInfo>({
     resolver: zodResolver(invoiceInfoSchema),
     defaultValues: invoiceInfo ?? {
@@ -45,11 +47,12 @@ export const InvoiceInfoForm = () => {
     },
   });
 
-  const onSubmit = (data: InvoiceInfo) => {
+  const onSubmit = async (data: InvoiceInfo) => {
     setInvoiceInfo(data);
     if (!partyInfo || !paymentInfo) return;
     const params = getRequestParams(partyInfo, paymentInfo, data);
-    console.log('Request Params', params);
+    if (!params) return;
+    await createRequest(params.request, params.paymentNetwork, params.invoice);
   };
 
   return (

@@ -25,7 +25,7 @@ export const PnAddressBasedSchema = PnAnyDeclarativeSchema.omit({
   id: true,
 }).extend({
   id: z.literal('pn-address-based'),
-  paymentAddress: z.string().optional(),
+  paymentAddress: z.string(),
   refundAddress: z.string().optional(),
 });
 

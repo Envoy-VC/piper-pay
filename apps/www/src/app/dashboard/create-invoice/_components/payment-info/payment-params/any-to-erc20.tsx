@@ -115,7 +115,7 @@ export const AnyToERC20Based = () => {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input placeholder='Payments Address (optional)' {...field} />
+              <Input placeholder='Payments Address' {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

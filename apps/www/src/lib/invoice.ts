@@ -291,14 +291,21 @@ export const getRequestParams = (
   const currency = getCurrencies(
     paymentInfo.currency.type,
     paymentInfo.currency.network
-  ).filter((c) => c.symbol === paymentInfo.currency.value);
+  ).filter((c) => c.id === paymentInfo.currency.value)[0];
 
-  if (!currency[0]) {
+  if (!currency) {
     throw new Error('Currency not found');
   }
 
   const currencyWithUnits =
-    Number(paymentInfo.expectedAmount) * 10 ** currency[0].decimals;
+    Number(paymentInfo.expectedAmount) * 10 ** currency.decimals;
+
+  invoiceInfo.invoiceItems.forEach((item) => {
+    item.unitPrice = (
+      Number(item.unitPrice) *
+      10 ** currency.decimals
+    ).toString();
+  });
 
   const request: ClientTypes.IRequestInfo = {
     currency: paymentInfo.currency,
