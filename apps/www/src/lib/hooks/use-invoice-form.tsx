@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import type  { PartyInfo, PaymentInfo } from '../zod';
+import type { PartyInfo, PaymentInfo } from '../zod';
 
 export enum InvoiceFormStep {
   PartyInfo = 0,
@@ -20,7 +20,7 @@ interface InvoiceFormState {
 }
 
 const useInvoiceFormStore = create<InvoiceFormState>((set, get) => ({
-  step: InvoiceFormStep.PartyInfo,
+  step: InvoiceFormStep.PaymentInfo,
   partyInfo: undefined,
   paymentInfo: undefined,
   setStep: (step) => set({ step }),

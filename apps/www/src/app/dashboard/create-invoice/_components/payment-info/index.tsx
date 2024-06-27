@@ -11,6 +11,7 @@ import {
   DeclarativeChains,
   VMChains,
   getCurrencies,
+  paymentIdDetails,
 } from '~/lib/invoice';
 import { type PaymentInfo, paymentInfoSchema } from '~/lib/zod';
 
@@ -36,15 +37,26 @@ import {
 } from '~/components/ui/select';
 
 import { Header } from '../header';
+import { PaymentParams } from './payment-params';
 
 export const PaymentInfoForm = () => {
   'use no memo';
 
-  const { next, previous, paymentInfo, setPaymentInfo } = useInvoiceForm();
+  const { previous, paymentInfo, setPaymentInfo, next } = useInvoiceForm();
 
   const form = useForm<PaymentInfo>({
     resolver: zodResolver(paymentInfoSchema),
-    defaultValues: paymentInfo,
+    defaultValues: paymentInfo ?? {
+      currency: {
+        type: Types.RequestLogic.CURRENCY.ETH,
+        network: 'mainnet',
+        value: 'ETH',
+      },
+      expectedAmount: '1',
+      parameters: {
+        id: 'pn-any-declarative',
+      },
+    },
   });
 
   const onSubmit = (values: PaymentInfo) => {
@@ -68,8 +80,8 @@ export const PaymentInfoForm = () => {
   return (
     <div className='flex flex-col gap-4 p-4'>
       <Header
-        description='Basic Invoice Information such as Currency of Payment, Payer and Payee Details.'
-        title='Invoice Information'
+        description='Choose the payment network and currency for your invoice.'
+        title='Currency Information'
       />
       <Form {...form}>
         <form className='space-y-1' onSubmit={form.handleSubmit(onSubmit)}>
@@ -231,7 +243,6 @@ export const PaymentInfoForm = () => {
               <FormItem>
                 <FormControl>
                   <Input
-                    autoComplete='new-password'
                     placeholder='Amount Expected in Currency'
                     type='number'
                     {...field}
@@ -241,6 +252,38 @@ export const PaymentInfoForm = () => {
               </FormItem>
             )}
           />
+          <div className='py-2 text-lg font-semibold text-neutral-700'>
+            Payment Network Type
+          </div>
+          <FormField
+            control={form.control}
+            name='id'
+            render={({ field }) => (
+              <FormItem>
+                <Select
+                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <FormControl>
+                    <SelectTrigger value={currencyNetwork}>
+                      <SelectValue placeholder='Payment Network Id' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.entries(paymentIdDetails).map(([key, value]) => {
+                      return (
+                        <SelectItem key={key} value={key}>
+                          {value}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <PaymentParams />
           <div className='flex items-center gap-3 py-6'>
             <Button type='button' variant='outline' onClick={previous}>
               Previous

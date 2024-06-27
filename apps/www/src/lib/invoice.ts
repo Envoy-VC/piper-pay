@@ -4,6 +4,7 @@ import {
   type ERC777Currency,
   type NativeCurrencyInput,
 } from '@requestnetwork/currency';
+import { type Types } from '@requestnetwork/request-client.js';
 import { RequestLogicTypes } from '@requestnetwork/types';
 import { z } from 'zod';
 
@@ -81,7 +82,7 @@ export const invoiceSchema = z
 
 export type InvoiceType = z.infer<typeof invoiceSchema>;
 // https://icons.llamao.fi/icons/chains/rsz_rsz_zksync era
-const EVMChains = [
+export const EVMChains = [
   {
     id: 'mainnet',
     name: 'Ethereum',
@@ -240,4 +241,35 @@ export const getCurrencies = (
 
   const c = allCurrencies.filter((currency) => currency.type === type);
   return c;
+};
+
+export const paymentIdDetails: Record<
+  Types.Extension.PAYMENT_NETWORK_ID,
+  string
+> = {
+  'pn-any-declarative':
+    'Payer declares payment sent. Payee declares payment received.',
+  'pn-any-to-erc20-proxy': 'Swap to ERC20 before sending to payee',
+  'pn-any-to-eth-proxy':
+    'Swap to native token before sending to payee. Only works on EVM-compatible chains.',
+  'pn-any-to-native-token':
+    'Swap to native token before sending to payee. Only works on NEAR.',
+  'pn-bitcoin-address-based':
+    'Payee generates a new Bitcoin address. Use block explorer to detect all payments to that address.',
+  'pn-erc20-address-based':
+    'Payee generates a new Ethereum address. Use block explorer to detect all payments to that address.',
+  'pn-erc20-fee-proxy-contract':
+    'Send ERC20 via smart contract with an optional fee.',
+  'pn-erc20-proxy-contract': 'Send ERC20 via smart contract',
+  'pn-erc20-transferable-receivable':
+    'Mint a Request as an NFT. The holder receives the payment.',
+  'pn-erc777-stream': 'Superfluid stream',
+  'pn-eth-fee-proxy-contract':
+    'Send native token via smart contract with an optional fee.',
+  'pn-eth-input-data':
+    'Send native token with paymentReference in the call data.',
+  'pn-native-token':
+    'Send native token via smart contract with an optional fee on NEAR.',
+  'pn-testnet-bitcoin-address-based':
+    'Payee generates a new Bitcoin testnet address. Use block explorer to detect all payments to that address.',
 };

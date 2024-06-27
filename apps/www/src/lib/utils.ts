@@ -53,12 +53,13 @@ function isValidZodLiteralUnion<T extends z.ZodLiteral<unknown>>(
 }
 
 export function constructZodLiteralUnionType<T extends z.ZodLiteral<unknown>>(
-  literals: T[]
+  literals: T[],
+  params?: z.RawCreateParams
 ) {
   if (!isValidZodLiteralUnion(literals)) {
     throw new Error(
       'Literals passed do not meet the criteria for constructing a union schema, the minimum length is 2'
     );
   }
-  return z.union(literals);
+  return z.union(literals, params);
 }
