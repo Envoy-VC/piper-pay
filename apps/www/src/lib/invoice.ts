@@ -3,10 +3,18 @@ import {
   type ERC20Currency,
   type ERC777Currency,
   type NativeCurrencyInput,
+  getSupportedERC20Tokens,
 } from '@requestnetwork/currency';
-import { type Types } from '@requestnetwork/request-client.js';
-import { RequestLogicTypes } from '@requestnetwork/types';
+import { type Types, Utils } from '@requestnetwork/request-client.js';
+import {
+  type ClientTypes,
+  type PaymentTypes,
+  RequestLogicTypes,
+} from '@requestnetwork/types';
+import { City, Country, State } from 'country-state-city';
 import { z } from 'zod';
+
+import type { InvoiceInfo, PartyInfo, PaymentInfo } from './zod';
 
 export const userInfoSchema = z.object({
   email: z.string().email().optional(),
@@ -272,4 +280,102 @@ export const paymentIdDetails: Record<
     'Send native token via smart contract with an optional fee on NEAR.',
   'pn-testnet-bitcoin-address-based':
     'Payee generates a new Bitcoin testnet address. Use block explorer to detect all payments to that address.',
+};
+
+export const getRequestParams = (
+  partyInfo: PartyInfo,
+  paymentInfo: PaymentInfo,
+  invoiceInfo: InvoiceInfo
+) => {
+  const currency = getCurrencies(
+    paymentInfo.currency.type,
+    paymentInfo.currency.network
+  ).filter((c) => c.symbol === paymentInfo.currency.value);
+
+  if (!currency[0]) {
+    throw new Error('Currency not found');
+  }
+
+  const currencyWithUnits =
+    Number(paymentInfo.expectedAmount) * (10 ** currency[0].decimals);
+
+  const request: ClientTypes.IRequestInfo = {
+    currency: paymentInfo.currency,
+    expectedAmount: currencyWithUnits,
+    payee: partyInfo.payee.identity,
+    payer: partyInfo.payer.identity,
+    timestamp: Utils.getCurrentTimestampInSecond(),
+  };
+
+  let { id, ...params } = paymentInfo.parameters;
+
+  if ('acceptedTokens' in params) {
+    const tokens = getSupportedERC20Tokens().filter((t) => {
+      return t.network === params.network;
+    });
+
+    if (tokens.length === 0) {
+      throw new Error('No tokens found');
+    }
+    const addresses: string[] = [];
+
+    params.acceptedTokens.forEach((token) => {
+      const t = tokens.find((t) => t.symbol === token);
+      if (t) {
+        addresses.push(t.address);
+      }
+    });
+
+    params.acceptedTokens = addresses;
+  }
+
+  const paymentNetwork: PaymentTypes.PaymentNetworkCreateParameters = {
+    id: paymentInfo.id,
+    // @ts-expect-error -- we are not using other interface for erc777 stream
+    parameters: params,
+  };
+
+  // Update country and state iso
+  const sellerInfo = partyInfo.payee.userInfo;
+  const buyerInfo = partyInfo.payer.userInfo;
+
+  if (sellerInfo?.address?.country) {
+    const country = Country.getCountryByCode(sellerInfo.address.country);
+    if (!country) return;
+    sellerInfo.address.country = country.name;
+    if (sellerInfo.address.state) {
+      const state = State.getStateByCodeAndCountry(
+        sellerInfo.address.state,
+        country.isoCode
+      );
+      if (!state) return;
+      sellerInfo.address.state = state.name;
+    }
+  }
+
+  if (buyerInfo?.address?.country) {
+    const country = Country.getCountryByCode(buyerInfo.address.country);
+    if (!country) return;
+    buyerInfo.address.country = country.name;
+    if (buyerInfo.address.state) {
+      const state = State.getStateByCodeAndCountry(
+        buyerInfo.address.state,
+        country.isoCode
+      );
+      if (!state) return;
+      buyerInfo.address.state = state.name;
+    }
+  }
+
+  const invoice: InvoiceType = {
+    ...invoiceInfo,
+    sellerInfo,
+    buyerInfo,
+  };
+
+  return {
+    request,
+    paymentNetwork,
+    invoice,
+  };
 };

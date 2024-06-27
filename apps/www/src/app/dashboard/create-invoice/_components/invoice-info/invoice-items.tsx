@@ -133,6 +133,9 @@ export const InvoiceItems = () => {
                             placeholder='3'
                             type='number'
                             {...field}
+                            onChange={(e) =>
+                              field.onChange(parseFloat(e.target.value))
+                            }
                           />
                         </FormControl>
                         <FormMessage />

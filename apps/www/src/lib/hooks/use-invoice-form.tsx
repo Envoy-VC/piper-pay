@@ -22,7 +22,7 @@ interface InvoiceFormState {
 }
 
 const useInvoiceFormStore = create<InvoiceFormState>((set, get) => ({
-  step: InvoiceFormStep.InvoiceInfo,
+  step: InvoiceFormStep.PartyInfo,
   partyInfo: undefined,
   paymentInfo: undefined,
   invoiceInfo: undefined,

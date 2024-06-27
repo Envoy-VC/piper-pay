@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useInvoiceForm } from '~/lib/hooks';
+import { getRequestParams } from '~/lib/invoice';
 import { type InvoiceInfo, invoiceInfoSchema } from '~/lib/zod';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,7 +26,7 @@ import { InvoiceItems } from './invoice-items';
 export const InvoiceInfoForm = () => {
   'use no memo';
 
-  const { paymentInfo, invoiceInfo, setInvoiceInfo, previous } =
+  const { paymentInfo, invoiceInfo, partyInfo, setInvoiceInfo, previous } =
     useInvoiceForm();
 
   const form = useForm<InvoiceInfo>({
@@ -46,7 +47,9 @@ export const InvoiceInfoForm = () => {
 
   const onSubmit = (data: InvoiceInfo) => {
     setInvoiceInfo(data);
-    console.log(data);
+    if (!partyInfo || !paymentInfo) return;
+    const params = getRequestParams(partyInfo, paymentInfo, data);
+    console.log('Request Params', params);
   };
 
   return (
@@ -168,7 +171,14 @@ export const InvoiceInfoForm = () => {
                 <FormItem>
                   <FormLabel>Late Fees % (optional)</FormLabel>
                   <FormControl>
-                    <Input placeholder='2' type='number' {...field} />
+                    <Input
+                      placeholder='2'
+                      type='number'
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseFloat(e.target.value))
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -181,7 +191,14 @@ export const InvoiceInfoForm = () => {
                 <FormItem>
                   <FormLabel>Late Fees Fixed (optional)</FormLabel>
                   <FormControl>
-                    <Input placeholder='17' type='number' {...field} />
+                    <Input
+                      placeholder='17'
+                      type='number'
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseFloat(e.target.value))
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
