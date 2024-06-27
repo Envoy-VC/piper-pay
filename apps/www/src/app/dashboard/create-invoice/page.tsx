@@ -11,10 +11,10 @@ import { Button } from '~/components/ui/button';
 import { InvoicePDF, type InvoicePDFProps } from '../_components';
 import { InvoiceInfoForm, PartyInfoForm, PaymentInfoForm } from './_components';
 
-export const renderPDF = async (props: InvoicePDFProps) => {
+const renderPDF = async (props: InvoicePDFProps) => {
   const { pdf } = await import('@react-pdf/renderer');
   const { InvoicePDF: PDF } = await import('../_components/invoice-pdf');
-  // @ts-expect-error  err
+  // @ts-expect-error -- TS CONVERSION ERROR
   return pdf(createElement(PDF, props)).toBlob();
 };
 
