@@ -17,6 +17,7 @@ import {
 import { Input } from '~/components/ui/input';
 
 import { Header } from '../header';
+import { InvoiceItems } from './invoice-items';
 
 export const InvoiceInfoForm = () => {
   'use no memo';
@@ -24,6 +25,7 @@ export const InvoiceInfoForm = () => {
     resolver: zodResolver(invoiceInfoSchema),
     defaultValues: {
       meta: { format: 'rnf_invoice', version: '0.0.3' },
+      invoiceItems: [{ name: '' }],
     },
   });
 
@@ -81,6 +83,7 @@ export const InvoiceInfoForm = () => {
               />
             </div>
           </div>
+          <InvoiceItems />
           <Button type='submit'>Submit</Button>
         </form>
       </Form>
