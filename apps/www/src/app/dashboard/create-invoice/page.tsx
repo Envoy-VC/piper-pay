@@ -4,7 +4,7 @@ import React from 'react';
 
 import { InvoiceFormStep, useInvoiceForm } from '~/lib/hooks';
 
-import { PartyInfoForm, PaymentInfoForm } from './_components';
+import { InvoiceInfoForm, PartyInfoForm, PaymentInfoForm } from './_components';
 
 const CreateInvoice = () => {
   const { step } = useInvoiceForm();
@@ -13,6 +13,7 @@ const CreateInvoice = () => {
       <div className='w-full basis-1/2'>
         {step === InvoiceFormStep.PartyInfo && <PartyInfoForm />}
         {step === InvoiceFormStep.PaymentInfo && <PaymentInfoForm />}
+        {step === InvoiceFormStep.InvoiceInfo && <InvoiceInfoForm />}
       </div>
       <div className='w-full basis-1/2'>q</div>
     </div>
