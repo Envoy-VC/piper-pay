@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useInvoiceForm } from '~/lib/hooks';
 import { type InvoiceInfo, invoiceInfoSchema } from '~/lib/zod';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,24 +13,39 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
+import { Textarea } from '~/components/ui/textarea';
 
 import { Header } from '../header';
 import { InvoiceItems } from './invoice-items';
 
 export const InvoiceInfoForm = () => {
   'use no memo';
+
+  const { paymentInfo, invoiceInfo, setInvoiceInfo, previous } =
+    useInvoiceForm();
+
   const form = useForm<InvoiceInfo>({
     resolver: zodResolver(invoiceInfoSchema),
-    defaultValues: {
+    defaultValues: invoiceInfo ?? {
       meta: { format: 'rnf_invoice', version: '0.0.3' },
-      invoiceItems: [{ name: '' }],
+      invoiceItems: [
+        {
+          name: '',
+          tax: { amount: '', type: 'percentage' },
+          currency: paymentInfo?.currency.value ?? 'USD',
+          quantity: 0,
+          unitPrice: '0',
+        },
+      ],
     },
   });
 
   const onSubmit = (data: InvoiceInfo) => {
+    setInvoiceInfo(data);
     console.log(data);
   };
 
@@ -41,18 +57,20 @@ export const InvoiceInfoForm = () => {
         title='Invoice Information'
       />
       <Form {...form}>
-        <form className='space-y-8' onSubmit={form.handleSubmit(onSubmit)}>
+        <form className='space-y-2' onSubmit={form.handleSubmit(onSubmit)}>
           <div className='flex flex-row items-center justify-between gap-2'>
-            <div className='flex flex-row items-center gap-2'>
-              <div className='font-semibold'>Invoice #</div>
+            <div className=''>
               <FormField
                 control={form.control}
                 name='invoiceNumber'
                 render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder='223' {...field} />
-                    </FormControl>
+                  <FormItem className='flex flex-col'>
+                    <div className='flex flex-row items-center gap-2'>
+                      <div className='w-[8rem] font-semibold'>Invoice #</div>
+                      <FormControl>
+                        <Input placeholder='223' {...field} />
+                      </FormControl>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -69,7 +87,7 @@ export const InvoiceInfoForm = () => {
                   <FormItem>
                     <FormControl>
                       <DateTimePicker
-                        granularity='second'
+                        granularity='minute'
                         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- is undefined if no default value
                         jsDate={new Date(field.value ?? Date.now())}
                         onJsDateChange={(date) =>
@@ -83,8 +101,126 @@ export const InvoiceInfoForm = () => {
               />
             </div>
           </div>
+          <FormField
+            control={form.control}
+            name='purchaseOrderId'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Order ID (optional)</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='8aa9475c-4582-4e1b-bf63-06ce82e02e6b'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <InvoiceItems />
-          <Button type='submit'>Submit</Button>
+          <div className='flex flex-col gap-2'>
+            <div className='py-2 text-lg font-semibold text-neutral-700'>
+              Payment Terms
+            </div>
+            <FormField
+              control={form.control}
+              name='terms'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Terms (optional)</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder='Payment due in 30 days.'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='paymentTerms.dueDate'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Due Date (optional)</FormLabel>
+                  <FormControl>
+                    <DateTimePicker
+                      granularity='minute'
+                      jsDate={
+                        new Date(
+                          field.value ?? Date.now() + 30 * 24 * 60 * 60 * 1000
+                        )
+                      }
+                      onJsDateChange={(date) =>
+                        field.onChange(date.toISOString())
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='paymentTerms.lateFeesPercent'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Late Fees % (optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder='2' type='number' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='paymentTerms.lateFeesFix'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Late Fees Fixed (optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder='17' type='number' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='note'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Note (optional)</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder='Additional notes for the invoice.'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <Button
+            type='button'
+            variant='secondary'
+            onClick={() => {
+              const data = form.getValues();
+              setInvoiceInfo(data);
+            }}
+          >
+            Save
+          </Button>
+
+          <div className='flex flex-row items-center gap-2 py-4'>
+            <Button type='button' variant='outline' onClick={previous}>
+              Back
+            </Button>
+            <Button type='submit'>Create Invoice</Button>
+          </div>
         </form>
       </Form>
     </div>

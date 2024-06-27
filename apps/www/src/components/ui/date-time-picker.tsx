@@ -419,7 +419,12 @@ const DateTimePicker = forwardRef<
         </PopoverContent>
       </Popover>
       <DateField {...fieldProps} value={currentValue()} />
-      <div className={cn('-ml-2 mr-2 h-6 w-5', !showClearButton && 'hidden')}>
+      <div
+        className={cn(
+          '-ml-2 mr-2 flex h-5 w-5 items-center justify-center',
+          !showClearButton && 'hidden'
+        )}
+      >
         <X
           className={cn(
             'text-primary/30 h-4 w-4 cursor-pointer',
