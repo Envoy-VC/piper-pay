@@ -22,7 +22,7 @@ export const tw = createTw({
   },
 });
 
-const URL = 'http://localhost:3000';
+const URL = 'https://piper-pay.vercel.app';
 
 Font.register({
   family: 'SF Pro Regular',

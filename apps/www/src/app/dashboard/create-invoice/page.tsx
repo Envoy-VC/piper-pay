@@ -4,8 +4,6 @@ import React, { createElement } from 'react';
 
 import { InvoiceFormStep, useInvoiceForm } from '~/lib/hooks';
 
-import { PDFViewer } from '@react-pdf/renderer';
-
 import { Button } from '~/components/ui/button';
 
 import { InvoicePDF, type InvoicePDFProps } from '../_components';
@@ -52,13 +50,11 @@ const CreateInvoice = () => {
         >
           Download
         </Button>
-        {/* <PDFViewer className='m-0 p-0' height='900px' showToolbar={false}> */}
         <InvoicePDF
           invoiceInfo={invoiceInfo}
           partyInfo={partyInfo}
           paymentInfo={paymentInfo}
         />
-        {/* </PDFViewer> */}
       </div>
     </div>
   );

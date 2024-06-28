@@ -44,6 +44,7 @@ export const useRequest = () => {
     const request = await data.client.createRequest({
       requestInfo,
       paymentNetwork,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know it's not null
       signer: requestInfo.payee!,
       contentData: invoice,
     });
