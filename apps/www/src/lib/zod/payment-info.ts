@@ -1,7 +1,7 @@
 import { Types } from '@requestnetwork/request-client.js';
 import { z } from 'zod';
 
-import { ChainNames, EVMChains } from '../invoice';
+import { ChainNames, EVMChains } from '../chains';
 import { constructZodLiteralUnionType } from '../utils';
 
 export const currencySchema = z.object({

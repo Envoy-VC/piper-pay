@@ -27,7 +27,6 @@ export const PartyInfoForm = () => {
   });
 
   const onSubmit = (values: PartyInfo) => {
-    console.log(values);
     setPartyInfo(values);
     next();
   };

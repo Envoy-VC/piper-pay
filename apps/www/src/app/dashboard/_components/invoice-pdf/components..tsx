@@ -1,6 +1,7 @@
 import { createTw } from 'react-pdf-tailwind';
 
-import { type UserInfo, currencyDetails } from '~/lib/invoice';
+import { type UserInfo } from '~/lib/invoice';
+import { currencyDetails } from '~/lib/payment';
 
 import { Font, Path, Rect, Svg, Text, View } from '@react-pdf/renderer';
 import type { Types } from '@requestnetwork/request-client.js';

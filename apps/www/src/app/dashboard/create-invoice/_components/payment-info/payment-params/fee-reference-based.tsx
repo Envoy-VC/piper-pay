@@ -5,7 +5,7 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { VMChains } from '~/lib/invoice';
+import { VMChains } from '~/lib/chains';
 import type { PaymentInfo } from '~/lib/zod';
 
 import { Checkbox } from '~/components/ui/checkbox';

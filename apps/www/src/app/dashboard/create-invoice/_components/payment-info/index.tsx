@@ -2,22 +2,17 @@
 
 import Image from 'next/image';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { getChainsForCurrency } from '~/lib/chains';
+import { getCurrenciesForType } from '~/lib/currency';
 import { useInvoiceForm } from '~/lib/hooks';
-import {
-  BtcChains,
-  DeclarativeChains,
-  VMChains,
-  getCurrencies,
-  paymentIdDetails,
-} from '~/lib/invoice';
+import { paymentIdDetails } from '~/lib/payment';
 import { type PaymentInfo, paymentInfoSchema } from '~/lib/zod';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Types } from '@requestnetwork/request-client.js';
-import { RequestLogicTypes } from '@requestnetwork/types';
 
 import { Button } from '~/components/ui/button';
 import {
@@ -54,19 +49,17 @@ export const PaymentInfoForm = () => {
       },
       expectedAmount: '1',
       parameters: {
-        id: 'pn-any-declarative',
+        id: 'pn-fee-reference-based',
       },
     },
   });
 
   const onSubmit = (values: PaymentInfo) => {
-    console.log(values);
     setPaymentInfo(values);
     next();
   };
 
   const currencyType = form.watch('currency.type');
-  const currencyNetwork = form.watch('currency.network');
 
   useEffect(() => {
     if (currencyType === Types.RequestLogic.CURRENCY.BTC) {
@@ -76,6 +69,14 @@ export const PaymentInfoForm = () => {
       form.setValue('currency.network', undefined);
     }
   }, [currencyType, form]);
+
+  const currencies = useMemo(() => {
+    return getCurrenciesForType(currencyType);
+  }, [currencyType]);
+
+  const chains = useMemo(() => {
+    return getChainsForCurrency(currencyType);
+  }, [currencyType]);
 
   return (
     <div className='flex flex-col gap-4 p-4'>
@@ -133,28 +134,27 @@ export const PaymentInfoForm = () => {
                     onValueChange={field.onChange}
                   >
                     <FormControl>
-                      <SelectTrigger value={currencyNetwork}>
+                      <SelectTrigger>
                         <SelectValue placeholder='Currency Network (only for tokens)' />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {(currencyType === Types.RequestLogic.CURRENCY.BTC
-                        ? BtcChains
-                        : [...VMChains, ...DeclarativeChains]
-                      ).map((chain) => (
-                        <SelectItem key={chain.id} value={chain.id}>
-                          <div className='flex flex-row items-center gap-2'>
-                            <Image
-                              alt={chain.name}
-                              className='rounded-full'
-                              height={24}
-                              src={`https://icons.llamao.fi/icons/chains/rsz_${chain.icon}?w=256&h=256`}
-                              width={24}
-                            />
-                            {chain.name}
-                          </div>
-                        </SelectItem>
-                      ))}
+                      {chains.map((chain) => {
+                        return (
+                          <SelectItem key={chain.id} value={chain.id}>
+                            <div className='flex flex-row items-center gap-2'>
+                              <Image
+                                alt={chain.name}
+                                className='rounded-full'
+                                height={24}
+                                src={`https://icons.llamao.fi/icons/chains/rsz_${chain.icon}?w=256&h=256`}
+                                width={24}
+                              />
+                              {chain.name}
+                            </div>
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -172,64 +172,18 @@ export const PaymentInfoForm = () => {
                   onValueChange={field.onChange}
                 >
                   <FormControl>
-                    <SelectTrigger value={currencyNetwork}>
+                    <SelectTrigger>
                       <SelectValue placeholder='Currency Value' />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {getCurrencies(currencyType, currencyNetwork).map(
-                      (currency) => {
-                        if (
-                          currency.type === RequestLogicTypes.CURRENCY.ETH ||
-                          currency.type === RequestLogicTypes.CURRENCY.BTC
-                        ) {
-                          return (
-                            <SelectItem
-                              key={currency.id}
-                              value={currency.symbol}
-                            >
-                              {currency.symbol}
-                            </SelectItem>
-                          );
-                        } else if (
-                          currency.type === RequestLogicTypes.CURRENCY.ERC20
-                        ) {
-                          return (
-                            <SelectItem
-                              key={currency.id}
-                              value={currency.address}
-                            >
-                              {currency.symbol}
-                            </SelectItem>
-                          );
-                        } else if (
-                          currency.type === RequestLogicTypes.CURRENCY.ERC777
-                        ) {
-                          return (
-                            <SelectItem
-                              key={currency.id}
-                              value={currency.address}
-                            >
-                              {currency.symbol}
-                            </SelectItem>
-                          );
-                        } else if (
-                          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- unexpected behavior
-                          currency.type === RequestLogicTypes.CURRENCY.ISO4217
-                        ) {
-                          return (
-                            <SelectItem
-                              key={currency.id}
-                              value={currency.symbol}
-                            >
-                              {currency.symbol}
-                            </SelectItem>
-                          );
-                        }
-
-                        return null;
-                      }
-                    )}
+                    {currencies.map((currency) => {
+                      return (
+                        <SelectItem key={currency.id} value={currency.id}>
+                          {currency.symbol}
+                        </SelectItem>
+                      );
+                    })}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -265,7 +219,7 @@ export const PaymentInfoForm = () => {
                   onValueChange={field.onChange}
                 >
                   <FormControl>
-                    <SelectTrigger value={currencyNetwork}>
+                    <SelectTrigger>
                       <SelectValue placeholder='Payment Network Id' />
                     </SelectTrigger>
                   </FormControl>

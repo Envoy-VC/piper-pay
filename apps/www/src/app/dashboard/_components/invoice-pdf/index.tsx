@@ -1,10 +1,9 @@
 import { useMemo } from 'react';
 
+import { getCurrencyFromId } from '~/lib/currency';
 import type { InvoiceInfo, PartyInfo, PaymentInfo } from '~/lib/zod';
 
 import { Document, Page, Text, View } from '@react-pdf/renderer';
-import { CurrencyManager } from '@requestnetwork/currency';
-import { RequestLogicTypes } from '@requestnetwork/types';
 
 import {
   Address,
@@ -30,23 +29,8 @@ export const InvoicePDF = ({
 }: InvoicePDFProps) => {
   'use no memo';
 
-  const currencySymbol = useMemo(() => {
-    console.log(paymentInfo?.currency);
-    const symbol =
-      CurrencyManager.getDefaultList()
-        .filter((c) => c.type === paymentInfo?.currency.type)
-        .find((c) => {
-          if (
-            c.type === RequestLogicTypes.CURRENCY.ERC20 ||
-            c.type === RequestLogicTypes.CURRENCY.ERC777
-          ) {
-            return c.address === paymentInfo?.currency.value;
-          }
-          return c.symbol === paymentInfo?.currency.value;
-        })?.symbol ?? '';
-
-    console.log(symbol);
-    return symbol;
+  const currency = useMemo(() => {
+    return getCurrencyFromId(paymentInfo?.currency.value ?? '');
   }, [paymentInfo?.currency]);
 
   return (
@@ -72,7 +56,7 @@ export const InvoicePDF = ({
           </View>
         </View>
         <PaymentDetails
-          currency={currencySymbol}
+          currency={currency?.symbol ?? ''}
           network={paymentInfo?.currency.network}
           paymentType={paymentInfo?.currency.type}
         />
@@ -93,7 +77,7 @@ export const InvoicePDF = ({
                 Total Due
               </Text>
               <Text style={tw('text-3xl font-sfProBold text-neutral-700')}>
-                {`${String(paymentInfo?.expectedAmount ?? '0')} ${currencySymbol.split('-')[0] ?? ''}`}
+                {`${String(paymentInfo?.expectedAmount ?? '0')} ${currency?.symbol.split('-')[0] ?? ''}`}
               </Text>
             </View>
           </View>

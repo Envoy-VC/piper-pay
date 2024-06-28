@@ -5,7 +5,7 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { EVMChains, VMChains } from '~/lib/invoice';
+import { EVMChains, VMChains } from '~/lib/chains';
 import type { PaymentInfo } from '~/lib/zod';
 
 import { getSupportedERC20Tokens } from '@requestnetwork/currency';
