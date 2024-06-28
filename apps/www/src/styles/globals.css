@@ -74,3 +74,23 @@
     @apply bg-background text-foreground;
   }
 }
+
+@font-face {
+  font-family: 'SF Pro Regular';
+  src: url('../../public/sfPro-regular.otf');
+}
+
+@font-face {
+  font-family: 'SF Pro Medium';
+  src: url('../../public/sfPro-medium.otf');
+}
+
+@font-face {
+  font-family: 'SF Pro Bold';
+  src: url('../../public/sfPro-bold.otf');
+}
+
+@font-face {
+  font-family: 'SF Pro Semibold';
+  src: url('../../public/sfPro-semibold.otf');
+}

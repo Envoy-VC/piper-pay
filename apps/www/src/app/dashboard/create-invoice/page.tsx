@@ -52,13 +52,13 @@ const CreateInvoice = () => {
         >
           Download
         </Button>
-        <PDFViewer className='m-0 p-0' height='900px' showToolbar={false}>
-          <InvoicePDF
-            invoiceInfo={invoiceInfo}
-            partyInfo={partyInfo}
-            paymentInfo={paymentInfo}
-          />
-        </PDFViewer>
+        {/* <PDFViewer className='m-0 p-0' height='900px' showToolbar={false}> */}
+        <InvoicePDF
+          invoiceInfo={invoiceInfo}
+          partyInfo={partyInfo}
+          paymentInfo={paymentInfo}
+        />
+        {/* </PDFViewer> */}
       </div>
     </div>
   );

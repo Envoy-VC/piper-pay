@@ -283,6 +283,14 @@ export const paymentIdDetails: Record<
     'Payee generates a new Bitcoin testnet address. Use block explorer to detect all payments to that address.',
 };
 
+export const currencyDetails: Record<Types.RequestLogic.CURRENCY, string> = {
+  ETH: 'Native Token (Ethereum, MATIC, etc.)',
+  BTC: 'Bitcoin',
+  ISO4217: 'Fiat Currency (USD, EUR, etc.)',
+  ERC20: 'ERC20 Token (DAI, USDC, etc.)',
+  ERC777: 'Superfluid streamable Token (USDCx, DAIx, etc.)',
+};
+
 export const getRequestParams = (
   partyInfo: PartyInfo,
   paymentInfo: PaymentInfo,

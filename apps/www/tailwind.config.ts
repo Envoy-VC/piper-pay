@@ -20,6 +20,10 @@ const config = {
     extend: {
       fontFamily: {
         sans: ['var(--font-sans)'],
+        sfProRegular: ['SF Pro Regular', 'sans-serif'],
+        sfProMedium: ['SF Pro Medium', 'sans-serif'],
+        sfProSemibold: ['SF Pro Semibold', 'sans-serif'],
+        sfProBold: ['SF Pro Bold', 'sans-serif'],
       },
       colors: {
         border: 'var(--border)',

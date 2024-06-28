@@ -64,8 +64,8 @@ importers:
         specifier: ^0.44.0
         version: 0.44.0(graphql@16.9.0)(typescript@5.4.5)
       '@requestnetwork/request-client.js':
-        specifier: ^0.45.0
-        version: 0.45.0
+        specifier: 0.47.1-next.2044
+        version: 0.47.1-next.2044
       '@requestnetwork/request-node':
         specifier: ^0.33.0
         version: 0.33.0
@@ -6012,29 +6012,13 @@ packages:
       react: 18.3.1
     dev: false
 
-  /@requestnetwork/advanced-logic@0.40.0:
-    resolution: {integrity: sha512-SOjMAS5djIALRipr5Uoj5AWe324jI6wvYDrM9WTr47oP6pZSA1wSmhiDqcMxyfnxdbNQ/EnvzcsQ922OQvkTog==}
+  /@requestnetwork/advanced-logic@0.42.1-next.2044:
+    resolution: {integrity: sha512-KR3cUwNqEEKWVzCx7jQV+5T/BrwOEpqjW6GeJiNRhL0gN5rpF3mMm1BgoVt3XU6PF+SazkUppt3S85+cV9hk0Q==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@requestnetwork/currency': 0.14.0
-      '@requestnetwork/types': 0.41.0
-      '@requestnetwork/utils': 0.41.0
-      tslib: 2.5.0
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-    dev: false
-
-  /@requestnetwork/currency@0.14.0:
-    resolution: {integrity: sha512-MorQn6OkrRdX/WxotMzsImiV6yVv7Sq79Tenlfmxomm93n2Q513VcjncgFyVTbzmyIWr34FUP345cYQbmdnybw==}
-    engines: {node: '>=18.0.0'}
-    dependencies:
-      '@metamask/contract-metadata': 1.31.0
-      '@requestnetwork/types': 0.41.0
-      '@requestnetwork/utils': 0.41.0
-      multicoin-address-validator: 0.5.15
-      node-dijkstra: 2.5.0
+      '@requestnetwork/currency': 0.16.1-next.2044
+      '@requestnetwork/types': 0.43.1-next.2044
+      '@requestnetwork/utils': 0.43.1-next.2044
       tslib: 2.5.0
     transitivePeerDependencies:
       - bufferutil
@@ -6058,16 +6042,19 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@requestnetwork/data-access@0.32.0:
-    resolution: {integrity: sha512-fqCYdcOpkw13D5kigy7Fgy2VmFNCThspFgNJlmsvb4m/S1ETuP5Q4OqErVRsLm37KoOWz2D4BCW0yrJiygL4UQ==}
+  /@requestnetwork/currency@0.16.1-next.2044:
+    resolution: {integrity: sha512-bg0UyvEgMRo60MnnA8hLNvBf6szxa6zwL1UL0c4Z7eI9v9zECrVtRGCOkT0YvvMxhR1vKXhAA12RXlCy7mxgZg==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@requestnetwork/multi-format': 0.15.15
-      '@requestnetwork/types': 0.41.0
-      '@requestnetwork/utils': 0.41.0
+      '@metamask/contract-metadata': 1.31.0
+      '@requestnetwork/types': 0.43.1-next.2044
+      '@requestnetwork/utils': 0.43.1-next.2044
+      multicoin-address-validator: 0.5.15
+      node-dijkstra: 2.5.0
       tslib: 2.5.0
     transitivePeerDependencies:
       - bufferutil
+      - supports-color
       - utf-8-validate
     dev: false
 
@@ -6078,6 +6065,19 @@ packages:
       '@requestnetwork/multi-format': 0.16.0
       '@requestnetwork/types': 0.42.0
       '@requestnetwork/utils': 0.42.0
+      tslib: 2.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
+  /@requestnetwork/data-access@0.34.1-next.2044:
+    resolution: {integrity: sha512-mIFnoCfrwazqaV4JjbFXcUULE7Zsip0Xrpm/o2kzff66KFKujuKHv2f4V5KEh8ehSS/3NoepyoxahUDNloRvfQ==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@requestnetwork/multi-format': 0.17.1-next.2044
+      '@requestnetwork/types': 0.43.1-next.2044
+      '@requestnetwork/utils': 0.43.1-next.2044
       tslib: 2.5.0
     transitivePeerDependencies:
       - bufferutil
@@ -6096,12 +6096,24 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@requestnetwork/epk-signature@0.5.40:
-    resolution: {integrity: sha512-jtIyGlaEoAmudoujNf5oxBuaWdzo2MZjWj60yuzUoa6pWfn8tX5ZwLtdTeoRLgX8nz0FkVQnWPlKKltc3lAqQA==}
+  /@requestnetwork/data-format@0.17.1-next.2044:
+    resolution: {integrity: sha512-Q8SeOuTHLRDgG+kWS7Sh1zrSVDYv2k124nJgUCStx5qTIDMEs4S+oPVKMcrozGf0yTCSvbskCz+0Yfm9nBrIxQ==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@requestnetwork/types': 0.41.0
-      '@requestnetwork/utils': 0.41.0
+      ajv: 6.12.4
+      ethers: 5.5.1
+      tslib: 2.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
+  /@requestnetwork/epk-signature@0.7.1-next.2044:
+    resolution: {integrity: sha512-kFeMvrZ45Onbg02KoKYzPmSbrmpkpc4b06QGKnj0zTVmDduSk1vwPykeCFmA0amanHqHPk7b1epAcR3yj/388g==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@requestnetwork/types': 0.43.1-next.2044
+      '@requestnetwork/utils': 0.43.1-next.2044
       tslib: 2.5.0
     transitivePeerDependencies:
       - bufferutil
@@ -6127,17 +6139,6 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@requestnetwork/multi-format@0.15.15:
-    resolution: {integrity: sha512-brWCZLNAOR4ROY8QTaWepPkPlQZRV3OzQTiZ90LwLjI+6GZLdZwRrA0WS+uDC+IgG4JjiyUaDW2e0nN4UKDKDg==}
-    engines: {node: '>=18.0.0'}
-    dependencies:
-      '@requestnetwork/types': 0.41.0
-      tslib: 2.5.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
   /@requestnetwork/multi-format@0.16.0:
     resolution: {integrity: sha512-dx3cPBZEe/eZUyrNcpu1pOKS/FRFhDkJEy3IfFY14jqbHOGTgYK11yAXVSGEvNsMcmRIbz9ENl3ZXBf11Y/twA==}
     engines: {node: '>=18.0.0'}
@@ -6149,14 +6150,25 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@requestnetwork/payment-detection@0.41.0:
-    resolution: {integrity: sha512-Fyp0dWr5eHY/gAc3E1IaOeU3yUAvrTfel4N3ybjS3pWReEzK/a7pxZEcvvtenN7lsFl/P/y36YktM9WFRSnuLQ==}
+  /@requestnetwork/multi-format@0.17.1-next.2044:
+    resolution: {integrity: sha512-qsPh2zzwmlGcDIpuGhCueT+7Eg14Sno1osBtruiTOYI0cEuuMpJ7XfsKGCNn/KndIJhwNjXz++4Cg2xWb2Grhw==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@requestnetwork/currency': 0.14.0
-      '@requestnetwork/smart-contracts': 0.34.0
-      '@requestnetwork/types': 0.41.0
-      '@requestnetwork/utils': 0.41.0
+      '@requestnetwork/types': 0.43.1-next.2044
+      tslib: 2.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
+  /@requestnetwork/payment-detection@0.42.0:
+    resolution: {integrity: sha512-YSFlHep2a14XeGoUi/oOlK5jAO8aaZuiT6YqhQtTteKoxbHkFtayRnKTh5+p5iL6g0tat5Z71ttIfyiIcCHRFg==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@requestnetwork/currency': 0.15.0
+      '@requestnetwork/smart-contracts': 0.35.0
+      '@requestnetwork/types': 0.42.0
+      '@requestnetwork/utils': 0.42.0
       ethers: 5.5.1
       graphql: 16.8.1
       graphql-request: 6.1.0(graphql@16.8.1)
@@ -6170,14 +6182,14 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@requestnetwork/payment-detection@0.42.0:
-    resolution: {integrity: sha512-YSFlHep2a14XeGoUi/oOlK5jAO8aaZuiT6YqhQtTteKoxbHkFtayRnKTh5+p5iL6g0tat5Z71ttIfyiIcCHRFg==}
+  /@requestnetwork/payment-detection@0.43.1-next.2044:
+    resolution: {integrity: sha512-OjLE6Mm1IlnQZ+sgPNYLxy01L1cJpn7Ici2YKaYCsdhYwc3zSk9ngHnF5wWFZHmCY12GI544FKts9x4zu8wlxg==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@requestnetwork/currency': 0.15.0
-      '@requestnetwork/smart-contracts': 0.35.0
-      '@requestnetwork/types': 0.42.0
-      '@requestnetwork/utils': 0.42.0
+      '@requestnetwork/currency': 0.16.1-next.2044
+      '@requestnetwork/smart-contracts': 0.36.1-next.2044
+      '@requestnetwork/types': 0.43.1-next.2044
+      '@requestnetwork/utils': 0.43.1-next.2044
       ethers: 5.5.1
       graphql: 16.8.1
       graphql-request: 6.1.0(graphql@16.8.1)
@@ -6214,22 +6226,22 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@requestnetwork/request-client.js@0.45.0:
-    resolution: {integrity: sha512-6WdtHYfDuPZNhSFLd9sDDFdTU6Gf3tfb0XbPLE+s2ia2v7msXZPtCentiUuoe3VOQc8zmGI+IzfhpEvZeVe8Vw==}
+  /@requestnetwork/request-client.js@0.47.1-next.2044:
+    resolution: {integrity: sha512-qY8Cfkpe9I42zIcnUttv+XrXXWzpd0qgQOlG8lvQEKyTfCYq2I7vYcGGPyDqb2UKmS5EJCh485+pz2HPA2Ot8g==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@requestnetwork/advanced-logic': 0.40.0
-      '@requestnetwork/currency': 0.14.0
-      '@requestnetwork/data-access': 0.32.0
-      '@requestnetwork/data-format': 0.15.0
-      '@requestnetwork/epk-signature': 0.5.40
-      '@requestnetwork/multi-format': 0.15.15
-      '@requestnetwork/payment-detection': 0.41.0
-      '@requestnetwork/request-logic': 0.31.0
-      '@requestnetwork/smart-contracts': 0.34.0
-      '@requestnetwork/transaction-manager': 0.32.0
-      '@requestnetwork/types': 0.41.0
-      '@requestnetwork/utils': 0.41.0
+      '@requestnetwork/advanced-logic': 0.42.1-next.2044
+      '@requestnetwork/currency': 0.16.1-next.2044
+      '@requestnetwork/data-access': 0.34.1-next.2044
+      '@requestnetwork/data-format': 0.17.1-next.2044
+      '@requestnetwork/epk-signature': 0.7.1-next.2044
+      '@requestnetwork/multi-format': 0.17.1-next.2044
+      '@requestnetwork/payment-detection': 0.43.1-next.2044
+      '@requestnetwork/request-logic': 0.33.1-next.2044
+      '@requestnetwork/smart-contracts': 0.36.1-next.2044
+      '@requestnetwork/transaction-manager': 0.34.1-next.2044
+      '@requestnetwork/types': 0.43.1-next.2044
+      '@requestnetwork/utils': 0.43.1-next.2044
       ethers: 5.5.1
       qs: 6.11.2
       tslib: 2.5.0
@@ -6240,14 +6252,14 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@requestnetwork/request-logic@0.31.0:
-    resolution: {integrity: sha512-JnbQvZpbyO341Edr2PY11XOd/qLtaNm2jPEOODTzlv1g/Nbm4RI4KyXw+0TLv/A03uXUcLV2i+M6w7Q2XjHQCQ==}
+  /@requestnetwork/request-logic@0.33.1-next.2044:
+    resolution: {integrity: sha512-S0t0ORR0ai/EdtGVprWrodSCGdUvBo7tMOl795NkvMv/lc8Gw0YZrTji7KQyRma1qmsd1blszD3oy7TWixZrpw==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@requestnetwork/advanced-logic': 0.40.0
-      '@requestnetwork/multi-format': 0.15.15
-      '@requestnetwork/types': 0.41.0
-      '@requestnetwork/utils': 0.41.0
+      '@requestnetwork/advanced-logic': 0.42.1-next.2044
+      '@requestnetwork/multi-format': 0.17.1-next.2044
+      '@requestnetwork/types': 0.43.1-next.2044
+      '@requestnetwork/utils': 0.43.1-next.2044
       semver: 7.5.4
       tslib: 2.5.0
     transitivePeerDependencies:
@@ -6288,15 +6300,15 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@requestnetwork/smart-contracts@0.34.0:
-    resolution: {integrity: sha512-yLB2jG0cO4ybfgNq6jeRdqpLZLxxEObc+QtzLVdl3FVB/wkKOUFciz0LEzYJdOZ7AbZnOMG1EkEbdMAS2JYwsw==}
+  /@requestnetwork/smart-contracts@0.35.0:
+    resolution: {integrity: sha512-RGqqaUMdqkNeBmXxaChg+868zi3bc0JFSwX5CnbxwCAmZSkk1nWKPuni/8Iz3oBj0ZP8ZMD8zzdUvUlt+H3M1Q==}
     engines: {node: '>=18.0.0'}
     dependencies:
       tslib: 2.5.0
     dev: false
 
-  /@requestnetwork/smart-contracts@0.35.0:
-    resolution: {integrity: sha512-RGqqaUMdqkNeBmXxaChg+868zi3bc0JFSwX5CnbxwCAmZSkk1nWKPuni/8Iz3oBj0ZP8ZMD8zzdUvUlt+H3M1Q==}
+  /@requestnetwork/smart-contracts@0.36.1-next.2044:
+    resolution: {integrity: sha512-NtuCXT7snGGFHQU2alKqv9oTW1TeGEaUM9Tz8C1iyPItVn05R7o5PgqsWRC2HsMcAOVbi8ArT/06VDz0D1K2gQ==}
     engines: {node: '>=18.0.0'}
     dependencies:
       tslib: 2.5.0
@@ -6320,24 +6332,14 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@requestnetwork/transaction-manager@0.32.0:
-    resolution: {integrity: sha512-6dsQlGWv0zGGbOfBYXgRXunUXDfB8T6PDqOhnu+b55Q66369vmqFi0UOFmjYKephwRkdo3sfsHhnPOGKAECziw==}
+  /@requestnetwork/transaction-manager@0.34.1-next.2044:
+    resolution: {integrity: sha512-qcy0+HaKX0C/JB4KMe77frtxlgyiY2TT3l0NiyJI3VdERByGSl/G2gzJe3EQwHind327xSeUe/57IDTjINi78w==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@requestnetwork/multi-format': 0.15.15
-      '@requestnetwork/types': 0.41.0
-      '@requestnetwork/utils': 0.41.0
+      '@requestnetwork/multi-format': 0.17.1-next.2044
+      '@requestnetwork/types': 0.43.1-next.2044
+      '@requestnetwork/utils': 0.43.1-next.2044
       tslib: 2.5.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
-  /@requestnetwork/types@0.41.0:
-    resolution: {integrity: sha512-2DnQ6FvZHCUJgtUNf0U9Ej9e7qZnKVf+vseaO2LvPJlBzp9eXzG402vfOmyOdtw3TbtuhLJATKQAnZ8nHvY0Vg==}
-    engines: {node: '>=18.0.0'}
-    dependencies:
-      ethers: 5.5.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -6353,15 +6355,11 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@requestnetwork/utils@0.41.0:
-    resolution: {integrity: sha512-YBo7TSPY+o2B3KA627S/5O7TTT0/caMCO0WmnzAz5CnHC3SeZycjPSoKk8kSOCXwMmZ7iLbyM0D5YOTNAIPbZQ==}
+  /@requestnetwork/types@0.43.1-next.2044:
+    resolution: {integrity: sha512-i/5ifXxJ3opr5XS/1DtCrWrsIIlcVGmkdPee8nZNfMNyQqc7dOQ/fBKHWqO7yhY9lilc1on8/lGYzwXh9fOQOA==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@requestnetwork/types': 0.41.0
-      '@toruslabs/eccrypto': 4.0.0
       ethers: 5.5.1
-      secp256k1: 4.0.2
-      tslib: 2.5.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -6372,6 +6370,20 @@ packages:
     engines: {node: '>=18.0.0'}
     dependencies:
       '@requestnetwork/types': 0.42.0
+      '@toruslabs/eccrypto': 4.0.0
+      ethers: 5.5.1
+      secp256k1: 4.0.2
+      tslib: 2.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
+  /@requestnetwork/utils@0.43.1-next.2044:
+    resolution: {integrity: sha512-3KmKoHrgSrI7ioUXkIL8NDUeKnSSUg8vVMwTFJHR5Rmnu7mhpDvqMkTWbCyGbDbMoDFX4i3/9Xgg0eeSczmu0g==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@requestnetwork/types': 0.43.1-next.2044
       '@toruslabs/eccrypto': 4.0.0
       ethers: 5.5.1
       secp256k1: 4.0.2
