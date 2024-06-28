@@ -34,7 +34,9 @@ export const getCreateRequestParams = (
     currencyCopy.value = currency.address;
   } else {
     currencyCopy.value = currency.symbol;
+    console.log({ currencyCopy, currency });
   }
+
   invoiceInfoCopy.invoiceItems.forEach((item) => {
     item.unitPrice = (
       Number(item.unitPrice) *
@@ -43,7 +45,7 @@ export const getCreateRequestParams = (
   });
 
   const request: ClientTypes.IRequestInfo = {
-    currency: paymentInfo.currency,
+    currency: currencyCopy,
     expectedAmount,
     payee: partyInfo.payee.identity,
     payer: partyInfo.payer.identity,
@@ -79,33 +81,41 @@ export const getCreateRequestParams = (
   };
 
   // Update country and state iso
-  const sellerInfo = partyInfo.payee.userInfo;
-  const buyerInfo = partyInfo.payer.userInfo;
+  const sellerInfo = structuredClone(partyInfo.payee.userInfo);
+  const buyerInfo = structuredClone(partyInfo.payer.userInfo);
 
   if (sellerInfo?.address?.country) {
     const country = Country.getCountryByCode(sellerInfo.address.country);
-    if (!country) return;
+    if (!country) {
+      throw new Error('Country not found');
+    }
     sellerInfo.address.country = country.name;
     if (sellerInfo.address.state) {
       const state = State.getStateByCodeAndCountry(
         sellerInfo.address.state,
         country.isoCode
       );
-      if (!state) return;
+      if (!state) {
+        throw new Error('State not found');
+      }
       sellerInfo.address.state = state.name;
     }
   }
 
   if (buyerInfo?.address?.country) {
     const country = Country.getCountryByCode(buyerInfo.address.country);
-    if (!country) return;
+    if (!country) {
+      throw new Error('Country not found');
+    }
     buyerInfo.address.country = country.name;
     if (buyerInfo.address.state) {
       const state = State.getStateByCodeAndCountry(
         buyerInfo.address.state,
         country.isoCode
       );
-      if (!state) return;
+      if (!state) {
+        throw new Error('State not found');
+      }
       buyerInfo.address.state = state.name;
     }
   }

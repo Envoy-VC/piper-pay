@@ -18,7 +18,6 @@ export const useRequest = () => {
     if (walletClient) {
       const signatureProvider = new Web3SignatureProvider(walletClient);
       const client = new RequestNetwork({
-        // useMockStorage: true,
         nodeConnectionConfig: {
           baseURL: 'https://sepolia.gateway.request.network/',
         },
@@ -37,36 +36,49 @@ export const useRequest = () => {
     paymentNetwork: PaymentTypes.PaymentNetworkCreateParameters,
     invoice: InvoiceType
   ) => {
-    if (!provider) return;
-
-    if (!data) return;
+    if (!provider) {
+      throw new Error('Connect wallet to create Invoice');
+    }
+    if (!data) {
+      throw new Error('Request client not initialized');
+    }
+    if (!requestInfo.payee) {
+      throw new Error('Missing payee');
+    }
 
     const request = await data.client.createRequest({
       requestInfo,
       paymentNetwork,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know it's not null
-      signer: requestInfo.payee!,
+      signer: requestInfo.payee,
       contentData: invoice,
     });
 
     await request.waitForConfirmation();
-
-    console.log('Request created:', request);
     return request;
   };
 
-  const getAllRequests = async () => {
+  const getAllRequestsData = async () => {
     if (!data) return;
     if (!address) return;
 
-    const res = await data.client.fromIdentity({
-      type: Types.Identity.TYPE.ETHEREUM_ADDRESS,
-      value: address,
-    });
+    try {
+      const res = await data.client.fromIdentity(
+        {
+          type: Types.Identity.TYPE.ETHEREUM_ADDRESS,
+          value: address,
+        },
+        {
+          from: 1719560034,
+        }
+      );
 
-    console.log(res);
+      const requestsData = res.map((request) => request.getData());
 
-    return res;
+      return requestsData;
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
   };
 
   const pay = async (requestID: string) => {
@@ -80,5 +92,5 @@ export const useRequest = () => {
     console.log(res);
   };
 
-  return { createRequest, getAllRequests, pay, data };
+  return { createRequest, getAllRequestsData, pay, data };
 };

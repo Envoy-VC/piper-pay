@@ -3,9 +3,11 @@ import { useForm } from 'react-hook-form';
 
 import { useInvoiceForm, useRequest } from '~/lib/hooks';
 import { getCreateRequestParams } from '~/lib/request';
+import { errorHandler, truncate } from '~/lib/utils';
 import { type InvoiceInfo, invoiceInfoSchema } from '~/lib/zod';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 
 import { Button } from '~/components/ui/button';
 import { DateTimePicker } from '~/components/ui/date-time-picker';
@@ -48,12 +50,27 @@ export const InvoiceInfoForm = () => {
   });
 
   const onSubmit = async (data: InvoiceInfo) => {
-    setInvoiceInfo(data);
-    if (!partyInfo || !paymentInfo) return;
-    const params = getCreateRequestParams(partyInfo, paymentInfo, data);
-    if (!params) return;
-    console.log(params);
-    await createRequest(params.request, params.paymentNetwork, params.invoice);
+    const id = toast.loading('Creating invoice...');
+    try {
+      setInvoiceInfo(data);
+      if (!partyInfo || !paymentInfo) {
+        throw new Error('Missing party or payment info');
+      }
+      const params = getCreateRequestParams(partyInfo, paymentInfo, data);
+      console.log(params);
+      const request = await createRequest(
+        params.request,
+        params.paymentNetwork,
+        params.invoice
+      );
+
+      toast.success('Invoice created!', {
+        id,
+        description: truncate(request.requestId),
+      });
+    } catch (error) {
+      toast.error(errorHandler(error), { id });
+    }
   };
 
   return (

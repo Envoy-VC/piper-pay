@@ -5,35 +5,28 @@ import React from 'react';
 import { useRequest } from '~/lib/hooks';
 
 import { useQuery } from '@tanstack/react-query';
+import { RequestsTable } from '~/components';
 
-import { Button } from '~/components/ui/button';
+import { Header } from './create-invoice/_components/header';
 
 const Dashboard = () => {
-  const { getAllRequests, data, pay } = useRequest();
+  const { getAllRequestsData, data } = useRequest();
 
   const { data: requests } = useQuery({
     queryKey: ['requests'],
-    queryFn: getAllRequests,
+    queryFn: getAllRequestsData,
     initialData: [],
     enabled: Boolean(data),
   });
 
   return (
-    <div className='flex w-full flex-col bg-gray-50'>
-      <Button onClick={getAllRequests}>Get Requests</Button>
-      {requests?.map((req) => {
-        const id = req.requestId;
-        const data = req.getData();
-        return (
-          <div key={id} className=''>
-            <div>ID: {id}</div>
-            <div>Currency: {data.currencyInfo.value}</div>
-            <div>Amount: {data.expectedAmount}</div>
-            <div>Current: {data.balance?.balance}</div>
-            <Button onClick={async () => await pay(id)}>Pay</Button>
-          </div>
-        );
-      })}
+    <div className='flex w-full flex-col bg-gray-50 px-4 py-12'>
+      <Header
+        className='pb-4'
+        description='View and manage your requests'
+        title='Dashboard'
+      />
+      <RequestsTable data={requests ?? []} />
     </div>
   );
 };

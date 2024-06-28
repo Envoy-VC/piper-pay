@@ -70,7 +70,7 @@ export const Address = (props: AddressProps) => {
   const getCountryName = () => {
     if (userInfo.address?.country) {
       const country = Country.getCountryByCode(userInfo.address.country);
-      return country?.name ?? null;
+      return country?.name ?? userInfo.address.country;
     }
     return null;
   };
@@ -83,7 +83,7 @@ export const Address = (props: AddressProps) => {
     if (!stateCode) return null;
 
     const state = State.getStateByCodeAndCountry(stateCode, countryCode);
-    return state?.name ?? null;
+    return state?.name ?? userInfo.address?.state ?? null;
   };
 
   const countryName = getCountryName();
