@@ -81,6 +81,16 @@ export const useRequest = () => {
     }
   };
 
+  const getRequestById = async (requestID: string) => {
+    if (!data) return;
+    if (!signer) return;
+
+    const request = await data.client.fromRequestId(requestID);
+    console.log(request.getData());
+
+    return request;
+  };
+
   const pay = async (requestID: string) => {
     if (!data) return;
     if (!signer) return;
@@ -92,5 +102,5 @@ export const useRequest = () => {
     console.log(res);
   };
 
-  return { createRequest, getAllRequestsData, pay, data };
+  return { createRequest, getAllRequestsData, pay, data, getRequestById };
 };

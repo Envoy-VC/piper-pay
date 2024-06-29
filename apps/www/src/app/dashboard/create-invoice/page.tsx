@@ -35,7 +35,6 @@ const CreateInvoice = () => {
               paymentInfo,
               invoiceInfo,
             });
-            console.log(blob);
             const file = new File([blob], 'invoice.pdf', {
               type: 'application/pdf',
             });
@@ -46,6 +45,9 @@ const CreateInvoice = () => {
             a.download = 'invoice.pdf';
             a.href = url;
             a.click();
+
+            URL.revokeObjectURL(url);
+            a.remove();
           }}
         >
           Download

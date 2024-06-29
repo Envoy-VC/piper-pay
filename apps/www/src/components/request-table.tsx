@@ -8,6 +8,7 @@ import { getCurrenciesForType } from '~/lib/currency';
 import { type InvoiceType } from '~/lib/invoice';
 import { truncate } from '~/lib/utils';
 
+import { RequestLogicTypes } from '@requestnetwork/types';
 import { type IRequestData } from '@requestnetwork/types/dist/client-types';
 import {
   type ColumnDef,
@@ -74,7 +75,15 @@ export const columns: ColumnDef<IRequestData>[] = [
       const request = row.original;
 
       const currency = getCurrenciesForType(request.currencyInfo.type).find(
-        (c) => (c.id = request.currencyInfo.value)
+        (c) => {
+          const isAddress =
+            request.currencyInfo.type === RequestLogicTypes.CURRENCY.ERC20;
+
+          if (isAddress && 'address' in c) {
+            return c.address === request.currencyInfo.value;
+          }
+          return c.symbol === request.currencyInfo.value;
+        }
       );
 
       if (!currency) {

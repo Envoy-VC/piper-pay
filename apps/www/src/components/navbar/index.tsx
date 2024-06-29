@@ -1,3 +1,8 @@
+'use client';
+
+import { usePathname } from 'next/navigation';
+
+
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -9,8 +14,13 @@ import { Button } from '../ui/button';
 import { ConnectButton } from './connect-button';
 
 export const Navbar = () => {
+  const pathname = usePathname();
+  const isHome = pathname === '/';
   return (
-    <div className='fixed top-0 h-[6dvh] w-full'>
+    <div className='fixed top-0 h-[6dvh] w-full' style={{
+      backgroundColor: isHome ? '#F1FDEF' : 'white',
+    
+    }}>
       <div className='mx-auto flex h-full items-center justify-between px-4 sm:px-8'>
         <Link className='flex flex-row items-center gap-2' href='/'>
           <Image

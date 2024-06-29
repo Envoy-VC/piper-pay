@@ -14,7 +14,7 @@ export type CurrencyDefinition<T> = T & {
   meta: unknown;
 };
 
-const getAllCurrencies = () => {
+export const getAllCurrencies = () => {
   const initial = CurrencyManager.getDefaultList();
   const toRemove = ['fUSDT-sepolia', 'fUSDC-sepolia'];
 
