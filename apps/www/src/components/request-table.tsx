@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 import React from 'react';
 
 import { getCurrenciesForType } from '~/lib/currency';
@@ -14,6 +16,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { BigNumber } from 'bignumber.js';
 import { formatUnits } from 'viem';
 
 import { Button } from '~/components/ui/button';
@@ -34,7 +37,9 @@ import {
   TableRow,
 } from '~/components/ui/table';
 
-import { MoreHorizontal } from 'lucide-react';
+import { TextCopy } from './text-copy';
+
+import { CircleCheckBig, MoreHorizontal } from 'lucide-react';
 
 interface RequestTableProps {
   data: IRequestData[];
@@ -44,7 +49,7 @@ export const columns: ColumnDef<IRequestData>[] = [
   {
     accessorKey: 'requestId',
     header: 'Request ID',
-    cell: ({ row }) => <div>{truncate(row.original.requestId)}</div>,
+    cell: ({ row }) => <div>{truncate(row.original.requestId, 12)}</div>,
   },
   {
     accessorKey: 'contentData.creationDate',
@@ -64,7 +69,7 @@ export const columns: ColumnDef<IRequestData>[] = [
   },
   {
     accessorKey: 'expectedAmount',
-    header: 'Expected Amount',
+    header: 'Amount',
     cell: ({ row }) => {
       const request = row.original;
 
@@ -87,6 +92,13 @@ export const columns: ColumnDef<IRequestData>[] = [
   {
     accessorKey: 'currency',
     header: 'Currency',
+    cell: ({ row }) => {
+      const request = row.original;
+
+      const shortened = request.currency.split('-').slice(0, 2).join(' ');
+
+      return <div>{shortened}</div>;
+    },
   },
   {
     accessorKey: 'contentData.invoiceNumber',
@@ -96,19 +108,59 @@ export const columns: ColumnDef<IRequestData>[] = [
     accessorKey: 'payee.value',
     header: 'Payee',
     cell: ({ row }) => (
-      <div>{truncate(row.original.payee?.value ?? '', 12)}</div>
+      <TextCopy
+        text={row.original.payee?.value ?? ''}
+        truncateOptions={{ length: 10 }}
+      />
     ),
   },
   {
     accessorKey: 'payer.value',
     header: 'Payer',
     cell: ({ row }) => (
-      <div>{truncate(row.original.payer?.value ?? '', 12)}</div>
+      <TextCopy
+        text={row.original.payer?.value ?? ''}
+        truncateOptions={{ length: 10 }}
+      />
     ),
   },
   {
     accessorKey: 'state',
     header: 'Status',
+    cell: ({ row }) => {
+      const request = row.original;
+      const current = BigNumber(request.balance?.balance ?? 0);
+      const expected = BigNumber(request.expectedAmount);
+
+      const progress = current
+        .dividedBy(expected)
+        .times(100)
+        .toNumber()
+        .toFixed(0);
+
+      const isComplete = current.isEqualTo(expected);
+
+      if (isComplete) {
+        return (
+          <div className='flex flex-col gap-2'>
+            <CircleCheckBig className='h-4 w-4 text-green-500' />
+          </div>
+        );
+      }
+      return (
+        <div className='flex flex-row items-center gap-2'>
+          <div className='w-10 rounded-lg border border-neutral-300'>
+            <div
+              className='h-2 rounded-lg bg-yellow-500'
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <div className='text-xs font-medium text-neutral-500'>
+            {progress}%
+          </div>
+        </div>
+      );
+    },
   },
   {
     id: 'actions',
@@ -131,7 +183,14 @@ export const columns: ColumnDef<IRequestData>[] = [
               Copy Request ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Go to Invoice</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link
+                className='cursor-pointer'
+                href={`/dashboard/invoice/${request.requestId}`}
+              >
+                Go to Invoice
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
