@@ -108,9 +108,7 @@ export const useRequest = () => {
     return request;
   };
 
-  const payERC777 = async (requestID: string) => {
-    const id = toast.loading('Paying Invoice');
-
+  const payERC777 = async (requestID: string, toastId: string | number) => {
     try {
       if (!data) {
         throw new Error('Request client not initialized');
@@ -148,11 +146,14 @@ export const useRequest = () => {
       };
 
       const res = await signer.sendTransaction(params);
-      await res.wait(2);
+      const receipt = await res.wait(2);
 
-      toast.success('Invoice Paid', { id });
+      toast.success('Invoice Paid', {
+        id: toastId,
+        description: receipt.transactionHash,
+      });
     } catch (error) {
-      toast.error(errorHandler(error), { id });
+      toast.error(errorHandler(error), { id: toastId });
     }
   };
 
@@ -171,6 +172,13 @@ export const useRequest = () => {
 
       const request = await data.client.fromRequestId(requestID);
       const requestData = request.getData();
+
+      if (
+        requestData.currencyInfo.type === Types.RequestLogic.CURRENCY.ERC777
+      ) {
+        await payERC777(requestID, id);
+        return;
+      }
 
       if (requestData.currencyInfo.type === Types.RequestLogic.CURRENCY.ERC20) {
         const hasApproval = await hasErc20Approval(

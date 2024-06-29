@@ -18,7 +18,7 @@ interface PayerProps {
 }
 
 export const Payer = ({ request }: PayerProps) => {
-  const { payERC777 } = useRequest();
+  const { pay } = useRequest();
   const [payAmount, setPayAmount] = useState(0);
 
   const requestData = request.getData();
@@ -44,7 +44,7 @@ export const Payer = ({ request }: PayerProps) => {
       String(payAmount),
       currency?.decimals ?? 18
     ).toString();
-    await payERC777(requestData.requestId);
+    await pay(requestData.requestId, parsedAmount);
   };
 
   return (

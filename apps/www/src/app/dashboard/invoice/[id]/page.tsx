@@ -4,6 +4,7 @@ import React, { createElement } from 'react';
 
 import { useRequest } from '~/lib/hooks';
 
+import { Types } from '@requestnetwork/request-client.js';
 import { useQuery } from '@tanstack/react-query';
 import { BigNumber } from 'bignumber.js';
 import { useAccount } from 'wagmi';
@@ -11,6 +12,7 @@ import { useAccount } from 'wagmi';
 import { Button } from '~/components/ui/button';
 
 import {
+  Erc777Balance,
   InvoicePDFCreated,
   type InvoicePDFCreatedProps,
   Payer,
@@ -69,6 +71,9 @@ const InvoicePage = ({ params: { id } }: Params) => {
 
   return (
     <div className='flex w-full flex-col gap-4 p-4'>
+      {requestData.currencyInfo.type === Types.RequestLogic.CURRENCY.ERC777 && (
+        <Erc777Balance request={requestData} />
+      )}
       <InvoicePDFCreated data={request.getData()} />
       <Button
         className='w-fit'

@@ -109,7 +109,8 @@ export const InvoicePDFCreated = ({ data }: InvoicePDFCreatedProps) => {
   const parsedData = useMemo(() => {
     const currency = getAllCurrencies().find((c) => {
       const isAddress =
-        data.currencyInfo.type === RequestLogicTypes.CURRENCY.ERC20;
+        data.currencyInfo.type === RequestLogicTypes.CURRENCY.ERC20 ||
+        data.currencyInfo.type === RequestLogicTypes.CURRENCY.ERC777;
 
       if (isAddress && 'address' in c) {
         return c.address === data.currencyInfo.value;
@@ -131,6 +132,13 @@ export const InvoicePDFCreated = ({ data }: InvoicePDFCreatedProps) => {
       items: i.invoiceItems,
     };
   }, [data.currencyInfo.type, data.currencyInfo.value, invoice]);
+
+  const parsedCurrency = formatUnits(
+    BigInt(data.expectedAmount),
+    parsedData.currency?.decimals ?? 18
+  );
+
+  const symbol = parsedData.currency?.symbol.split('-')[0] ?? '';
 
   return (
     <Document>
@@ -176,10 +184,7 @@ export const InvoicePDFCreated = ({ data }: InvoicePDFCreatedProps) => {
                 Total Due
               </Text>
               <Text style={tw('text-3xl font-sfProBold text-neutral-700')}>
-                {`${formatUnits(
-                  BigInt(data.expectedAmount),
-                  parsedData.currency?.decimals ?? 18
-                )} ${data.currency.split('-')[0] ?? ''}`}
+                {`${parsedCurrency} ${symbol}`}
               </Text>
             </View>
           </View>
