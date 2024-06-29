@@ -60,6 +60,7 @@ export const PaymentInfoForm = () => {
   };
 
   const currencyType = form.watch('currency.type');
+  const network = form.watch('currency.network');
 
   useEffect(() => {
     if (currencyType === Types.RequestLogic.CURRENCY.BTC) {
@@ -71,8 +72,18 @@ export const PaymentInfoForm = () => {
   }, [currencyType, form]);
 
   const currencies = useMemo(() => {
-    return getCurrenciesForType(currencyType);
-  }, [currencyType]);
+    const currenciesForType = getCurrenciesForType(currencyType);
+    if (network) {
+      const networkCurrencies = currenciesForType.filter((c) => {
+        if ('network' in c) {
+          return c.network === network;
+        }
+        return false;
+      });
+      return networkCurrencies;
+    }
+    return currenciesForType;
+  }, [currencyType, network]);
 
   const chains = useMemo(() => {
     return getChainsForCurrency(currencyType);

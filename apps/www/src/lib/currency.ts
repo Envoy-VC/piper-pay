@@ -14,6 +14,35 @@ export type CurrencyDefinition<T> = T & {
   meta: unknown;
 };
 
+const getAllCurrencies = () => {
+  const initial = CurrencyManager.getDefaultList();
+  const toRemove = ['fUSDT-sepolia', 'fUSDC-sepolia'];
+
+  const filtered = initial.filter((c) => !toRemove.includes(c.id));
+  const toAdd = [
+    {
+      id: 'fUSDT-sepolia',
+      hash: '0xF046b3CA5ae2879c6bAcC4D42fAF363eE8379F78',
+      address: '0xF046b3CA5ae2879c6bAcC4D42fAF363eE8379F78',
+      network: 'sepolia',
+      decimals: 6,
+      symbol: 'fUSDT',
+      type: RequestLogicTypes.CURRENCY.ERC20,
+    },
+    {
+      id: 'fUSDC-sepolia',
+      hash: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
+      address: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
+      network: 'sepolia',
+      decimals: 6,
+      symbol: 'fUSDC',
+      type: RequestLogicTypes.CURRENCY.ERC20,
+    },
+  ];
+
+  return [...filtered, ...toAdd];
+};
+
 export function getCurrenciesForType(
   type: RequestLogicTypes.CURRENCY
 ): CurrencyDefinition<CurrencyInput>[];
@@ -31,9 +60,7 @@ export function getCurrenciesForType(
 ): CurrencyDefinition<ERC777CurrencyInput>[];
 
 export function getCurrenciesForType(type: RequestLogicTypes.CURRENCY) {
-  const filtered = CurrencyManager.getDefaultList().filter(
-    (c) => c.type === type
-  );
+  const filtered = getAllCurrencies().filter((c) => c.type === type);
 
   if (
     type === RequestLogicTypes.CURRENCY.BTC ||
@@ -49,5 +76,5 @@ export function getCurrenciesForType(type: RequestLogicTypes.CURRENCY) {
 }
 
 export const getCurrencyFromId = (id: string) => {
-  return CurrencyManager.getDefaultList().find((c) => c.id === id);
+  return getAllCurrencies().find((c) => c.id === id);
 };

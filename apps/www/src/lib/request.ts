@@ -21,7 +21,7 @@ export const getCreateRequestParams = (
 
   const expectedAmount = parseUnits(
     String(paymentInfo.expectedAmount),
-    currency.decimals
+    6
   ).toString();
 
   const invoiceInfoCopy = structuredClone(invoiceInfo);
@@ -40,7 +40,7 @@ export const getCreateRequestParams = (
   invoiceInfoCopy.invoiceItems.forEach((item) => {
     item.unitPrice = (
       Number(item.unitPrice) *
-      10 ** currency.decimals
+      10 ** 6
     ).toString();
   });
 
