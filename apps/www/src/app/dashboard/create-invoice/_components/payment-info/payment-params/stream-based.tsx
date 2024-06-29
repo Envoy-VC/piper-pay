@@ -9,6 +9,7 @@ import { VMChains } from '~/lib/chains';
 import type { PaymentInfo } from '~/lib/zod';
 
 import { Checkbox } from '~/components/ui/checkbox';
+import { DateTimePicker } from '~/components/ui/date-time-picker';
 import {
   FormControl,
   FormField,
@@ -44,13 +45,21 @@ export const StreamBased = () => {
           </FormItem>
         )}
       />
+
       <FormField
         control={form.control}
         name='parameters.expectedStartDate'
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input placeholder='Start Date' {...field} />
+              <DateTimePicker
+                granularity='minute'
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- is undefined if no default value
+                jsDate={new Date(field.value ?? Date.now())}
+                onJsDateChange={(date) =>
+                  field.onChange(String(Math.round(date.getTime() / 1000)))
+                }
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

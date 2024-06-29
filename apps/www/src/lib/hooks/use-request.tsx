@@ -6,12 +6,19 @@ import {
   payRequest,
   prepareApproveErc20,
 } from '@requestnetwork/payment-processor';
+import { encodePayErc777StreamRequest } from '@requestnetwork/payment-processor';
+import { validateRequest } from '@requestnetwork/payment-processor/dist/payment/utils';
 import { RequestNetwork, Types } from '@requestnetwork/request-client.js';
-import { type ClientTypes, type PaymentTypes } from '@requestnetwork/types';
+import {
+  type ClientTypes,
+  ExtensionTypes,
+  type PaymentTypes,
+} from '@requestnetwork/types';
 import { Web3SignatureProvider } from '@requestnetwork/web3-signature';
+import sfMetadata from '@superfluid-finance/metadata';
+import { Framework } from '@superfluid-finance/sdk-core';
 import { BigNumber } from 'ethers';
 import { toast } from 'sonner';
-import { decodeAbiParameters } from 'viem';
 import { useAccount, useWalletClient } from 'wagmi';
 
 import { type InvoiceType } from '../invoice';
@@ -97,9 +104,56 @@ export const useRequest = () => {
     if (!provider) return;
 
     const request = await data.client.fromRequestId(requestID);
-    console.log(request.getData());
 
     return request;
+  };
+
+  const payERC777 = async (requestID: string) => {
+    const id = toast.loading('Paying Invoice');
+
+    try {
+      if (!data) {
+        throw new Error('Request client not initialized');
+      }
+      if (!address) {
+        throw new Error('Connect wallet to pay Invoice');
+      }
+      if (!signer) {
+        throw new Error('Connect wallet to pay Invoice');
+      }
+      const request = await data.client.fromRequestId(requestID);
+      const requestData = request.getData();
+      validateRequest(
+        requestData,
+        ExtensionTypes.PAYMENT_NETWORK_ID.ERC777_STREAM
+      );
+
+      const chainId = (await signer.provider.getNetwork()).chainId;
+      const resolverAddress =
+        sfMetadata.getNetworkByChainId(chainId)?.contractsV1.resolver;
+
+      const sf = await Framework.create({
+        chainId,
+        provider: signer.provider,
+        resolverAddress,
+      });
+
+      // @ts-expect-error -- TS CONVERSION ERROR
+      const encodedTx = await encodePayErc777StreamRequest(requestData, sf);
+
+      const params = {
+        data: encodedTx,
+        to: sf.host.contract.address,
+        value: 0,
+      };
+
+      const res = await signer.sendTransaction(params);
+      await res.wait(2);
+
+      toast.success('Invoice Paid', { id });
+    } catch (error) {
+      toast.error(errorHandler(error), { id });
+    }
   };
 
   const pay = async (requestID: string, amount?: string) => {
@@ -118,20 +172,7 @@ export const useRequest = () => {
       const request = await data.client.fromRequestId(requestID);
       const requestData = request.getData();
 
-      console.log(
-        decodeAbiParameters(
-          [
-            { name: 'spender', type: 'address' },
-            { name: 'value', type: 'uint256' },
-          ],
-          '0x095ea7b3000000000000000000000000399f5ee127ce7432e4921a61b8cf52b0af52cbfe0000000000000000000000000000000000000000000000000000000005f5e100'
-        )
-      );
-
-      if (
-        requestData.currencyInfo.type === Types.RequestLogic.CURRENCY.ERC20 ||
-        requestData.currencyInfo.type === Types.RequestLogic.CURRENCY.ERC777
-      ) {
+      if (requestData.currencyInfo.type === Types.RequestLogic.CURRENCY.ERC20) {
         const hasApproval = await hasErc20Approval(
           requestData,
           address,
@@ -174,5 +215,12 @@ export const useRequest = () => {
     }
   };
 
-  return { createRequest, getAllRequestsData, pay, data, getRequestById };
+  return {
+    createRequest,
+    getAllRequestsData,
+    pay,
+    data,
+    getRequestById,
+    payERC777,
+  };
 };

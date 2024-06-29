@@ -38,9 +38,23 @@ export const getAllCurrencies = () => {
       symbol: 'fUSDC',
       type: RequestLogicTypes.CURRENCY.ERC20,
     },
+    {
+      id: 'ETHx-sepolia',
+      hash: '0x30a6933Ca9230361972E413a15dC8114c952414e',
+      address: '0x30a6933Ca9230361972E413a15dC8114c952414e',
+      network: 'sepolia',
+      decimals: 18,
+      symbol: 'ETHx',
+      type: RequestLogicTypes.CURRENCY.ERC777,
+      meta: undefined,
+    },
   ];
 
   return [...filtered, ...toAdd];
+};
+
+export const getCurrencyManager = () => {
+  return new CurrencyManager(getAllCurrencies());
 };
 
 export function getCurrenciesForType(
@@ -72,6 +86,7 @@ export function getCurrenciesForType(type: RequestLogicTypes.CURRENCY) {
   } else if (type === RequestLogicTypes.CURRENCY.ERC20) {
     return filtered as CurrencyDefinition<ERC20CurrencyInput>[];
   }
+
   return filtered as CurrencyDefinition<ERC777CurrencyInput>[];
 }
 

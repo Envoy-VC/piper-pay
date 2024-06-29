@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { type DateRange } from 'react-day-picker';
 
+import { getAllCurrencies } from '~/lib/currency';
 import { useRequest } from '~/lib/hooks';
 
 import { useQuery } from '@tanstack/react-query';
@@ -54,6 +55,13 @@ const Dashboard = () => {
         }}
       >
         Refresh Invoices
+      </Button>
+      <Button
+        onClick={() => {
+          console.log(getAllCurrencies().filter((c) => c.type === 'ERC777'));
+        }}
+      >
+        Click
       </Button>
     </div>
   );

@@ -21,26 +21,26 @@ export const getCreateRequestParams = (
 
   const expectedAmount = parseUnits(
     String(paymentInfo.expectedAmount),
-    6
+    currency.decimals
   ).toString();
 
   const invoiceInfoCopy = structuredClone(invoiceInfo);
   const currencyCopy = structuredClone(paymentInfo.currency);
 
   if (
-    paymentInfo.currency.type === Types.RequestLogic.CURRENCY.ERC20 &&
+    (paymentInfo.currency.type === Types.RequestLogic.CURRENCY.ERC20 ||
+      paymentInfo.currency.type === Types.RequestLogic.CURRENCY.ERC777) &&
     'address' in currency
   ) {
     currencyCopy.value = currency.address;
   } else {
     currencyCopy.value = currency.symbol;
-    console.log({ currencyCopy, currency });
   }
 
   invoiceInfoCopy.invoiceItems.forEach((item) => {
     item.unitPrice = (
       Number(item.unitPrice) *
-      10 ** 6
+      10 ** currency.decimals
     ).toString();
   });
 

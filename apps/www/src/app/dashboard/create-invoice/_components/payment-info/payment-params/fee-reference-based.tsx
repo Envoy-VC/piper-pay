@@ -70,7 +70,7 @@ export const FeeReferenceBasedParams = () => {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input placeholder='Fee Address (optional)' {...field} />
+              <Input placeholder='Fee Address' {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -82,11 +82,7 @@ export const FeeReferenceBasedParams = () => {
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input
-                placeholder='Fee Amount (optional)'
-                type='number'
-                {...field}
-              />
+              <Input placeholder='Fee Amount' type='number' {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

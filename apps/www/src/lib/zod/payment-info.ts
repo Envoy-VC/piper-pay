@@ -42,8 +42,11 @@ export const PnFeeReferenceBasedSchema = PnReferenceBasedSchema.omit({
   id: true,
 }).extend({
   id: z.literal('pn-fee-reference-based'),
-  feeAddress: z.string().optional(),
-  feeAmount: z.string().optional(),
+  feeAddress: z
+    .string()
+    .optional()
+    .default('0x0000000000000000000000000000000000000000'),
+  feeAmount: z.string().optional().default('0'),
 });
 
 export const PnStreamReferenceBasedSchema = PnReferenceBasedSchema.omit({

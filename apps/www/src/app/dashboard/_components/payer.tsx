@@ -18,7 +18,7 @@ interface PayerProps {
 }
 
 export const Payer = ({ request }: PayerProps) => {
-  const { pay } = useRequest();
+  const { payERC777 } = useRequest();
   const [payAmount, setPayAmount] = useState(0);
 
   const requestData = request.getData();
@@ -27,7 +27,10 @@ export const Payer = ({ request }: PayerProps) => {
     const c = getAllCurrencies()
       .filter((c) => c.type === requestData.currencyInfo.type)
       .find((c) => {
-        if (c.type === RequestLogicTypes.CURRENCY.ERC20) {
+        if (
+          c.type === RequestLogicTypes.CURRENCY.ERC20 ||
+          c.type === RequestLogicTypes.CURRENCY.ERC777
+        ) {
           return c.address === requestData.currencyInfo.value;
         }
         return c.symbol === requestData.currencyInfo.value;
@@ -36,14 +39,12 @@ export const Payer = ({ request }: PayerProps) => {
     return c;
   }, [requestData.currencyInfo.type, requestData.currencyInfo.value]);
 
-  console.log(currency);
-
   const onPay = async () => {
     const parsedAmount = parseUnits(
       String(payAmount),
       currency?.decimals ?? 18
     ).toString();
-    await pay(requestData.requestId, parsedAmount);
+    await payERC777(requestData.requestId);
   };
 
   return (

@@ -76,7 +76,30 @@ export const AnyToEthBased = () => {
           </FormItem>
         )}
       />
-
+      <FormField
+        control={form.control}
+        name='parameters.feeAddress'
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <Input placeholder='Fee Address' {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name='parameters.feeAmount'
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <Input placeholder='Fee Amount' type='number' {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
       {showAdvanced ? (
         <>
           <FormField
@@ -122,34 +145,6 @@ export const AnyToEthBased = () => {
                 <FormControl>
                   <Input
                     placeholder='Max Rate Timespan (optional)'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name='parameters.feeAddress'
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder='Fee Address (optional)' {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name='parameters.feeAmount'
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    placeholder='Fee Amount (optional)'
-                    type='number'
                     {...field}
                   />
                 </FormControl>
