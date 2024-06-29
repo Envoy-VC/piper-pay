@@ -7,6 +7,7 @@ import { useInvoiceForm } from '~/lib/hooks';
 import { type PartyInfo, partyInfoSchema } from '~/lib/zod';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Types } from '@requestnetwork/request-client.js';
 import { useAccount } from 'wagmi';
 
 import { Button } from '~/components/ui/button';
@@ -33,6 +34,10 @@ export const PartyInfoForm = () => {
 
   useEffect(() => {
     if (address) {
+      form.setValue(
+        'payee.identity.type',
+        Types.Identity.TYPE.ETHEREUM_ADDRESS
+      );
       form.setValue('payee.identity.value', address);
     }
   }, [address, form]);

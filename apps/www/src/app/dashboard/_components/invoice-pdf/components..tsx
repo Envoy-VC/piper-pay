@@ -2,6 +2,7 @@ import { createTw } from 'react-pdf-tailwind';
 
 import { type UserInfo } from '~/lib/invoice';
 import { currencyDetails } from '~/lib/payment';
+import { APP_URL } from '~/lib/utils';
 
 import { Font, Path, Rect, Svg, Text, View } from '@react-pdf/renderer';
 import type { Types } from '@requestnetwork/request-client.js';
@@ -23,26 +24,24 @@ export const tw = createTw({
   },
 });
 
-const URL = 'https://piper-pay.vercel.app';
-
 Font.register({
   family: 'SF Pro Regular',
-  src: `${URL}/sfPro-regular.otf`,
+  src: `${APP_URL}/sfPro-regular.otf`,
 });
 
 Font.register({
   family: 'SF Pro Medium',
-  src: `${URL}/sfPro-medium.otf`,
+  src: `${APP_URL}/sfPro-medium.otf`,
 });
 
 Font.register({
   family: 'SF Pro Semibold',
-  src: `${URL}/sfPro-semibold.otf`,
+  src: `${APP_URL}/sfPro-semibold.otf`,
 });
 
 Font.register({
   family: 'SF Pro Bold',
-  src: `${URL}/sfPro-bold.otf`,
+  src: `${APP_URL}/sfPro-bold.otf`,
 });
 
 export const Logo = () => {

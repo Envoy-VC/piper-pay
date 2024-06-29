@@ -2,6 +2,9 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { z } from 'zod';
 
+
+export const APP_URL = 'https://piper-pay.vercel.app';
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

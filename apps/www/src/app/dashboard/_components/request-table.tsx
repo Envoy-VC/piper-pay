@@ -20,6 +20,7 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { formatUnits } from 'viem';
 
+import { TextCopy } from '~/components/text-copy';
 import { Button } from '~/components/ui/button';
 import {
   DropdownMenu,
@@ -37,8 +38,6 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui/table';
-
-import { TextCopy } from './text-copy';
 
 import { CircleCheckBig, MoreHorizontal } from 'lucide-react';
 

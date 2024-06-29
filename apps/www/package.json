@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "next build",
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "format": "prettier . --write --cache",
     "lint": "next lint",
     "start": "next start"
@@ -19,6 +19,7 @@
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-popover": "^1.1.1",
     "@radix-ui/react-select": "^2.1.1",
+    "@radix-ui/react-slider": "^1.2.0",
     "@radix-ui/react-slot": "^1.0.2",
     "@react-pdf/renderer": "3.3.8",
     "@react-stately/datepicker": "^3.9.4",

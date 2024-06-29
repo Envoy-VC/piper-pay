@@ -1,4 +1,4 @@
-import Image from 'next/image';
+'use client';
 
 import { useMemo } from 'react';
 
@@ -104,8 +104,6 @@ export interface InvoicePDFCreatedProps {
 }
 
 export const InvoicePDFCreated = ({ data }: InvoicePDFCreatedProps) => {
-  'use no memo';
-
   const invoice = data.contentData as InvoiceType;
 
   const parsedData = useMemo(() => {

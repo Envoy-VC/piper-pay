@@ -38,6 +38,8 @@ export const UserDetails = ({ type }: UserDetailsProps) => {
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
+  const identityType = form.watch(`${type}.identity.type`);
+
   return (
     <div className='mb-6 flex flex-col gap-2 rounded-xl p-2 shadow-[rgba(0,0,0,0.1)_0px_1px_2px_0px]'>
       <div className='py-1 text-lg font-semibold text-neutral-700'>
@@ -48,7 +50,7 @@ export const UserDetails = ({ type }: UserDetailsProps) => {
         name={`${type}.identity.type`}
         render={({ field }) => (
           <FormItem>
-            <Select defaultValue={field.value} onValueChange={field.onChange}>
+            <Select value={identityType} onValueChange={field.onChange}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder='Select Payee Type' />
