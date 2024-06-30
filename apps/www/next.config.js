@@ -7,6 +7,9 @@ const config = {
       {
         hostname: 'icons.llamao.fi',
       },
+      {
+        hostname: 'api.dicebear.com',
+      },
     ],
   },
 };

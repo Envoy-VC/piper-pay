@@ -1,18 +1,22 @@
 'use client';
 
+import Image from 'next/image';
+
 import React, { useEffect, useState } from 'react';
 
 import { useEthers } from '~/lib/hooks/use-ethers';
+
+import { ChainNames } from '~/lib/chains';
+import { truncate } from '~/lib/utils';
 
 import { type IRequestData } from '@requestnetwork/types/dist/client-types';
 import sfMetadata from '@superfluid-finance/metadata';
 import { Framework } from '@superfluid-finance/sdk-core';
 import { useQuery } from '@tanstack/react-query';
 import { BigNumber } from 'bignumber.js';
+import StreamGIF from 'public/stream.gif';
 
 import { Button } from '~/components/ui/button';
-
-import { ArrowBigRightIcon, MoveRight } from 'lucide-react';
 
 interface Erc777BalanceProps {
   request: IRequestData;
@@ -29,6 +33,10 @@ export const Erc777Balance = ({ request }: Erc777BalanceProps) => {
   const network = sfMetadata.getNetworkByShortName(
     request.currencyInfo.network ?? 'mainnet'
   );
+
+  const chainLogo =
+    ChainNames.find((c) => c.id === request.currencyInfo.network)?.icon ??
+    'ethereum';
 
   const { data, refetch } = useQuery({
     enabled: false,
@@ -103,21 +111,59 @@ export const Erc777Balance = ({ request }: Erc777BalanceProps) => {
 
   return (
     <div className='flex flex-col gap-4'>
-      <div className='text-xl font-semibold text-neutral-700'>
-        SuperFluid Stream
-      </div>
-      <div className='flex w-fit flex-row items-center gap-4 rounded-3xl bg-[#e9ffe5] p-4 text-neutral-700'>
-        <div className='flex flex-col items-center justify-center'>
-          <div className='text-5xl'>{payerBalance.toFixed(8)}</div>
+      <div className='m-4 mx-auto flex w-full max-w-4xl flex-col items-center justify-center gap-4 rounded-xl text-center'>
+        <div className='text-lg font-semibold text-neutral-800'>
+          Total Amount Streamed
         </div>
-        <div className='relative h-fit'>
-          <MoveRight size={64} />
-          <div className='absolute bottom-0 right-1/2 translate-x-1/4 translate-y-1/4 text-lg font-semibold text-neutral-700'>
-            -10
+        <div className='flex flex-row items-center justify-between gap-8 text-6xl font-semibold text-neutral-800'>
+          <Image
+            alt='Image'
+            className='rounded-full'
+            height={64}
+            src={`https://icons.llamao.fi/icons/chains/rsz_${chainLogo}?w=512&h=512`}
+            width={64}
+          />
+          <div>0.000000003417126</div>
+          <div className='text-[#01A261]'>ETHx</div>
+        </div>
+        <div className='flex w-full max-w-3xl flex-row items-end py-8'>
+          <div className='flex flex-1 flex-col gap-4'>
+            <div className='tet-neutral-700 text-start text-base font-medium'>
+              Sender
+            </div>
+            <div className='flex flex-row items-center gap-3 rounded-xl border p-3 text-lg font-medium text-neutral-800 shadow-sm'>
+              <Image
+                alt='Image'
+                className='rounded-full'
+                height={32}
+                src={`https://api.dicebear.com/9.x/shapes/png?seed=${request.payer?.value ?? ''}`}
+                width={32}
+              />
+              {truncate(request.payer?.value ?? '', 12)}
+            </div>
           </div>
-        </div>
-        <div className='flex flex-col items-center justify-center'>
-          <div className='text-5xl'>{payeeBalance.toFixed(8)}</div>
+          <Image
+            alt='Image'
+            className='mb-1'
+            height={84}
+            src={StreamGIF}
+            width={84}
+          />
+          <div className='flex flex-1 flex-col gap-4'>
+            <div className='tet-neutral-700 text-start text-base font-medium'>
+              Receiver
+            </div>
+            <div className='flex flex-row items-center gap-3 rounded-xl border p-3 text-lg font-medium text-neutral-800 shadow-sm'>
+              <Image
+                alt='Image'
+                className='rounded-full'
+                height={32}
+                src={`https://api.dicebear.com/9.x/shapes/png?seed=${request.payee?.value ?? ''}`}
+                width={32}
+              />
+              {truncate(request.payee?.value ?? '', 12)}
+            </div>
+          </div>
         </div>
       </div>
       <Button
