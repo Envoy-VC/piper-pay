@@ -15,7 +15,7 @@ import { Header } from './create-invoice/_components/header';
 const Dashboard = () => {
   const { getAllRequestsData, data } = useRequest();
   const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(1719668336000),
+    from: new Date(1719775001000),
     to: new Date(4875323983000),
   });
 

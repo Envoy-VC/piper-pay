@@ -76,7 +76,8 @@ export const columns: ColumnDef<IRequestData>[] = [
       const currency = getCurrenciesForType(request.currencyInfo.type).find(
         (c) => {
           const isAddress =
-            request.currencyInfo.type === RequestLogicTypes.CURRENCY.ERC20;
+            request.currencyInfo.type === RequestLogicTypes.CURRENCY.ERC20 ||
+            request.currencyInfo.type === RequestLogicTypes.CURRENCY.ERC777;
 
           if (isAddress && 'address' in c) {
             return c.address === request.currencyInfo.value;
@@ -103,7 +104,21 @@ export const columns: ColumnDef<IRequestData>[] = [
     cell: ({ row }) => {
       const request = row.original;
 
-      const shortened = request.currency.split('-').slice(0, 2).join(' ');
+      const currency = getCurrenciesForType(request.currencyInfo.type).find(
+        (c) => {
+          const isAddress =
+            request.currencyInfo.type === RequestLogicTypes.CURRENCY.ERC20 ||
+            request.currencyInfo.type === RequestLogicTypes.CURRENCY.ERC777;
+
+          if (isAddress && 'address' in c) {
+            return c.address === request.currencyInfo.value;
+          }
+          return c.symbol === request.currencyInfo.value;
+        }
+      );
+
+      const shortened =
+        currency?.symbol.split('-').slice(0, 2).join(' ') ?? 'unknown';
 
       return <div>{shortened}</div>;
     },

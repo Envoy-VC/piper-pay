@@ -78,7 +78,12 @@ export const Erc777Balance = ({ request }: Erc777BalanceProps) => {
 
       setValue(Math.abs(Number(flowRate.flowRate)));
 
-      const precision = 19 - Math.log10(Math.abs(Number(flowRate.flowRate)));
+      let precision: number;
+      if (parseInt(flowRate.flowRate) === 0) {
+        precision = 0;
+      } else {
+        precision = 19 - Math.log10(Math.abs(Number(flowRate.flowRate)));
+      }
 
       const b1 = BigNumber(
         BigNumber(payerBalance).dividedBy(1e18).toFixed(precision)
@@ -89,15 +94,6 @@ export const Erc777Balance = ({ request }: Erc777BalanceProps) => {
 
       setPayerBalance(b1);
       setPayeeBalance(b2);
-
-      console.log({
-        framework: sf,
-        superToken,
-        precision,
-        flowRate,
-        payeeBalance,
-        payerBalance,
-      });
 
       return {
         framework: sf,

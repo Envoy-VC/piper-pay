@@ -8,6 +8,7 @@ import { Types } from '@requestnetwork/request-client.js';
 import { useQuery } from '@tanstack/react-query';
 import { BigNumber } from 'bignumber.js';
 import { useAccount } from 'wagmi';
+import { Message } from '~/components';
 
 import { Button } from '~/components/ui/button';
 
@@ -45,10 +46,10 @@ const InvoicePage = ({ params: { id } }: Params) => {
   });
 
   if (!address) {
-    return <div>no address</div>;
+    return <Message message='Please connect your wallet to view this page' />;
   }
 
-  if (isPending || !request) return <div>Loading...</div>;
+  if (isPending || !request) return <Message message='Loading...' />;
 
   const requestData = request.getData();
 
@@ -58,9 +59,12 @@ const InvoicePage = ({ params: { id } }: Params) => {
     } else if (requestData.payer?.value === address) {
       return 'payer';
     }
-
     return 'other';
   };
+
+  if (userType() === 'other') {
+    return <Message message='You are not authorized to view this page' />;
+  }
 
   const current = BigNumber(requestData.balance?.balance ?? 0);
   const expected = BigNumber(requestData.expectedAmount);
