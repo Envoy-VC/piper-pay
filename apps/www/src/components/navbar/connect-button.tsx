@@ -32,9 +32,11 @@ export const ConnectButton = () => {
 
   // ENS
   const { data: ensName, status: ensNameStatus } = useEnsName({
+    chainId: 1,
     address,
   });
   const { data: ensAvatar, status: ensAvatarStatus } = useEnsAvatar({
+    chainId: 1,
     name: ensName ?? '',
     query: {
       enabled: ensName !== null,
