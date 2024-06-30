@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { useEthers } from '~/lib/hooks/use-ethers';
 
 import { ChainNames } from '~/lib/chains';
-import { truncate } from '~/lib/utils';
+import { errorHandler, truncate } from '~/lib/utils';
 
 import { type IRequestData } from '@requestnetwork/types/dist/client-types';
 import sfMetadata from '@superfluid-finance/metadata';
@@ -15,17 +15,21 @@ import { Framework } from '@superfluid-finance/sdk-core';
 import { useQuery } from '@tanstack/react-query';
 import { BigNumber } from 'bignumber.js';
 import StreamGIF from 'public/stream.gif';
+import { toast } from 'sonner';
 
 import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { Skeleton } from '~/components/ui/skeleton';
 
 interface Erc777BalanceProps {
   request: IRequestData;
 }
 
 export const Erc777Balance = ({ request }: Erc777BalanceProps) => {
-  const { provider } = useEthers();
+  const { provider, signer } = useEthers();
   const payeeAddress = request.payee?.value ?? '0x0';
   const payerAddress = request.payer?.value ?? '0x0';
+  const [value, setValue] = useState<number>(0);
 
   const [payerBalance, setPayerBalance] = useState<BigNumber>(BigNumber(0));
   const [payeeBalance, setPayeeBalance] = useState<BigNumber>(BigNumber(0));
@@ -38,8 +42,8 @@ export const Erc777Balance = ({ request }: Erc777BalanceProps) => {
     ChainNames.find((c) => c.id === request.currencyInfo.network)?.icon ??
     'ethereum';
 
-  const { data, refetch } = useQuery({
-    enabled: false,
+  const { data, refetch, isPending } = useQuery({
+    enabled: Boolean(provider) && Boolean(network),
     queryKey: [
       'erc777-balance',
       payeeAddress,
@@ -72,16 +76,33 @@ export const Erc777Balance = ({ request }: Erc777BalanceProps) => {
         providerOrSigner: provider,
       });
 
-      setPayerBalance(BigNumber(payerBalance).dividedBy(1e18));
-      setPayeeBalance(BigNumber(payeeBalance).dividedBy(1e18));
+      setValue(Math.abs(Number(flowRate.flowRate)));
+
+      const precision = 19 - Math.log10(Math.abs(Number(flowRate.flowRate)));
+
+      const b1 = BigNumber(
+        BigNumber(payerBalance).dividedBy(1e18).toFixed(precision)
+      );
+      const b2 = BigNumber(
+        BigNumber(payeeBalance).dividedBy(1e18).toFixed(precision)
+      );
+
+      setPayerBalance(b1);
+      setPayeeBalance(b2);
 
       console.log({
+        framework: sf,
+        superToken,
+        precision,
         flowRate,
         payeeBalance,
         payerBalance,
       });
 
       return {
+        framework: sf,
+        superToken,
+        precision,
         flowRate,
         payeeBalance,
         payerBalance,
@@ -94,11 +115,11 @@ export const Erc777Balance = ({ request }: Erc777BalanceProps) => {
     if (!data) return;
     if (payeeBalance.isEqualTo(0) || payerBalance.isEqualTo(0)) return;
 
-    const multiplier = BigNumber(data.flowRate.flowRate).dividedBy(1e19);
+    const rate = BigNumber(data.flowRate.flowRate).dividedBy(1e19);
 
     const interval = setInterval(() => {
-      const updatedPayeeBalance = payeeBalance.minus(multiplier);
-      const updatedPayerBalance = payerBalance.plus(multiplier);
+      const updatedPayeeBalance = payeeBalance.minus(rate);
+      const updatedPayerBalance = payerBalance.plus(rate);
 
       setPayerBalance(updatedPayerBalance);
       setPayeeBalance(updatedPayeeBalance);
@@ -123,7 +144,13 @@ export const Erc777Balance = ({ request }: Erc777BalanceProps) => {
             src={`https://icons.llamao.fi/icons/chains/rsz_${chainLogo}?w=512&h=512`}
             width={64}
           />
-          <div>0.000000003417126</div>
+          <div>
+            {isPending ? (
+              <Skeleton className='h-[64px] w-[400px] rounded-xl' />
+            ) : (
+              <div>{payeeBalance.toFixed(data?.precision ?? 18)}</div>
+            )}
+          </div>
           <div className='text-[#01A261]'>ETHx</div>
         </div>
         <div className='flex w-full max-w-3xl flex-row items-end py-8'>
@@ -165,14 +192,75 @@ export const Erc777Balance = ({ request }: Erc777BalanceProps) => {
             </div>
           </div>
         </div>
+        <div className='flex flex-row items-center gap-2 text-lg font-semibold text-neutral-800'>
+          Flow Rate:{' '}
+          {isPending ? (
+            <Skeleton className='h-6 w-32' />
+          ) : (
+            <div className='flex flex-row items-center gap-2'>
+              <Input
+                className='w-32'
+                value={value}
+                onChange={(e) => setValue(Number(e.target.value))}
+              />
+              wei
+              <Button
+                className=''
+                variant='secondary'
+                onClick={async () => {
+                  const id = toast.loading('Updating flow rate...');
+                  try {
+                    if (value === Math.abs(Number(data?.flowRate.flowRate))) {
+                      throw new Error('Flow rate is already set to this value');
+                    }
+                    if (!data) {
+                      throw new Error('Superfluid framework not initialized');
+                    }
+                    if (!signer) {
+                      throw new Error('Connect wallet to update flow rate');
+                    }
+                    const operation = data.superToken.updateFlow({
+                      flowRate: String(value),
+                      sender: payerAddress,
+                      receiver: payeeAddress,
+                    });
+
+                    const batchCall = data.framework.batchCall([operation]);
+                    const operationStructArray = await Promise.all(
+                      batchCall.getOperationStructArrayPromises
+                    );
+                    const txData =
+                      batchCall.host.contract.interface.encodeFunctionData(
+                        'batchCall',
+                        [operationStructArray]
+                      );
+
+                    const params = {
+                      data: txData,
+                      to: data.framework.host.contract.address,
+                      value: 0,
+                    };
+
+                    const tx = await signer.sendTransaction(params);
+                    const receipt = await tx.wait(2);
+
+                    toast.success('Flow rate updated', {
+                      id,
+                      description: receipt.transactionHash,
+                    });
+
+                    await refetch();
+                  } catch (error) {
+                    toast.error(errorHandler(error), { id });
+                  }
+                }}
+              >
+                Update
+              </Button>
+            </div>
+          )}{' '}
+        </div>
       </div>
-      <Button
-        onClick={() => {
-          void refetch();
-        }}
-      >
-        Refetch
-      </Button>
     </div>
   );
 };

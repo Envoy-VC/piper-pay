@@ -53,10 +53,6 @@ export const getAllCurrencies = () => {
   return [...filtered, ...toAdd];
 };
 
-export const getCurrencyManager = () => {
-  return new CurrencyManager(getAllCurrencies());
-};
-
 export function getCurrenciesForType(
   type: RequestLogicTypes.CURRENCY
 ): CurrencyDefinition<CurrencyInput>[];

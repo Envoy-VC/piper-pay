@@ -99,33 +99,35 @@ const InvoicePage = ({ params: { id } }: Params) => {
         Download
       </Button>
 
-      <div className='flex flex-row items-center gap-2'>
-        <div className='text-base font-semibold text-neutral-700'>
-          Payment Status:{' '}
-        </div>
-        <div className='text-base font-semibold text-neutral-700'>
-          {isComplete ? (
-            <div className='flex flex-row items-center gap-2'>
-              <CircleCheckBig className='h-6 w-6 text-green-500' />
-              Completed
-            </div>
-          ) : (
-            <div className='flex flex-row items-center gap-2'>
+      {requestData.currencyInfo.type !== Types.RequestLogic.CURRENCY.ERC777 && (
+        <div className='flex flex-row items-center gap-2'>
+          <div className='text-base font-semibold text-neutral-700'>
+            Payment Status:{' '}
+          </div>
+          <div className='text-base font-semibold text-neutral-700'>
+            {isComplete ? (
               <div className='flex flex-row items-center gap-2'>
-                <div className='w-24 rounded-md border border-neutral-300'>
-                  <div
-                    className='h-3 rounded-md bg-yellow-500'
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <div className='text-sm font-medium text-neutral-500'>
-                  {progress}%
+                <CircleCheckBig className='h-6 w-6 text-green-500' />
+                Completed
+              </div>
+            ) : (
+              <div className='flex flex-row items-center gap-2'>
+                <div className='flex flex-row items-center gap-2'>
+                  <div className='w-24 rounded-md border border-neutral-300'>
+                    <div
+                      className='h-3 rounded-md bg-yellow-500'
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                  <div className='text-sm font-medium text-neutral-500'>
+                    {progress}%
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      )}
       {userType() === 'payer' ? <Payer request={request} /> : null}
     </div>
   );

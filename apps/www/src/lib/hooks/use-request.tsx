@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 
 import {
   approveErc20,
+  encodePayErc777StreamRequest,
   hasErc20Approval,
   payRequest,
   prepareApproveErc20,
 } from '@requestnetwork/payment-processor';
-import { encodePayErc777StreamRequest } from '@requestnetwork/payment-processor';
 import { validateRequest } from '@requestnetwork/payment-processor/dist/payment/utils';
 import { RequestNetwork, Types } from '@requestnetwork/request-client.js';
 import {
