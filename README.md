@@ -1,81 +1,109 @@
-# Turborepo starter
+<p align="center">
+<img src="./assets/logo-text.png" alt="PiperPay Logo"  width="200px"/></p>
 
-This is an official starter Turborepo.
+PiperPay is a Invoice and Payment management system built on top of Request Network. It allows users to create invoices and accept payments in a decentralized manner.
 
-## Using this example
+Users can request payments in various forms such as:
 
-Run the following command:
+- Native Cryptocurrencies: ETH, MATIC, etc.
+- ERC20 Tokens: DAI, USDC, etc.
+- Bitcoin
+- Fiat Currencies: USD, EUR, etc.
+- Superfluid Streams
 
-```sh
-npx create-turbo@latest
+## How it works 🛠️
+
+The Invoice follows `rnf_invoice-0.0.3` schema standard by request network.
+
+1. **Create Invoice**: Users can create an invoice by specifying Party Details, Payment Details, and Invoice Details. Entire invoice creation process is validated using `Zod` and `React Hook Form`.
+2. Invoices can be downloaded as PDFs using `@react-pdf/renderer`.
+3. **Payment**: Users can pay the invoice various methods such as from a smart contract proxy, swap tokens, or pay directly.
+
+## Demo Video 🎥
+
+[![Demo Video](https://img.youtube.com/vi/l5eMEywt_TY/0.jpg)](https://www.youtube.com/watch?v=l5eMEywt_TY)
+
+https://youtu.be/l5eMEywt_TY
+
+## Screenshots 📸
+
+<table>
+  <tr>
+    <td valign="top" width="50%">
+      <br>
+      <img src="./assets/1.png" alt="Homepage" >
+    </td>
+    <td valign="top" width="50%">
+      <br>
+      <img src="./assets/2.png" alt="Party Details" >
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td valign="top" width="50%">
+      <br>
+            <img src="./assets/3.png" alt="Currency Information" >
+    </td>
+    <td valign="top" width="50%">
+      <br>
+            <img src="./assets/4.png" alt="Invoice Information" >
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td valign="top" width="50%">
+      <br>
+            <img src="./assets/5.png" alt="Dashboard" >
+    </td>
+    <td valign="top" width="50%">
+      <br>
+            <img src="./assets/6.png" alt="Superfluid Stream" >
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td valign="top" width="50%">
+      <br>
+            <img src="./assets/7.png" alt="ERC20 Payment" >
+    </td>
+    <td valign="top" width="50%">
+      <br>
+            <img src="./assets/8.png" alt="Invoice PDF Example" >
+    </td>
+  </tr>
+</table>
+
+## 🧑🏼‍💻 Tech Stack
+
+- **Frontend**: Next.js, Tailwind CSS, shadcn
+- **Integration**: `@requestnetwork/request-client.js`
+
+## Get Started 🚀
+
+The following repository is a turborepo and divided into the following:
+
+- **apps/www** - The web application built using Next.js.
+
+First install the dependencies by running the following:
+
+```
+pnpm install
 ```
 
-## What's inside?
+Then fill in the Environment variables in `apps/www/.env.local`
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+```env
+NEXT_PUBLIC_WALLETCONNECT_ID="walletconnect_project_ir"
 ```
 
-### Develop
-
-To develop all apps and packages, run the following command:
+Finally, run the following command to start the application:
 
 ```
-cd my-turborepo
 pnpm dev
 ```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
